@@ -1,88 +1,69 @@
 # toolshop-api-tests
 
-Agentic, review-friendly API test automation for the
-[Practice Software Testing Toolshop API](https://api.practicesoftwaretesting.com/api/documentation),
-built with Playwright and TypeScript. It starts with five tests, one per HTTP method on `/brands`,
-and is designed to grow endpoint by endpoint, by engineers, Claude Code or GitHub Copilot.
+API test automation for the [Toolshop API](https://api.practicesoftwaretesting.com/api/documentation)
+by Practice Software Testing, built with Playwright and TypeScript.
 
-[![api-tests](https://github.com/youvegotnigel/toolshop-api-tests/actions/workflows/ci.yml/badge.svg)](https://github.com/youvegotnigel/toolshop-api-tests/actions/workflows/ci.yml)
+## What it does
 
-## Quick start
+- Tests the `/brands` endpoints with one test per HTTP method: GET, POST, PUT, PATCH and DELETE.
+- Checks status codes, response contracts (zod) and role rules (only an admin can delete).
+- Creates its own test data and cleans it up after every run.
+- Produces HTML, JUnit and optional Allure reports, with readable `test.step` names.
+- Runs against the public API or an offline stub, locally, in GitHub Actions or in Jenkins.
+
+## Requirements
+
+- Node.js 24 (see `.nvmrc`)
+- Passwords for the public Toolshop demo accounts (published in the
+  [practice-software-testing](https://github.com/testsmith-io/practice-software-testing) repository)
+
+No browsers are needed.
+
+## Setup
 
 ```bash
-nvm use                      # Node 24
-npm ci                       # no browsers needed for API tests
-cp .env.example .env.local   # add the public demo passwords
-npm test                     # public API
-npm run test:stub            # offline, no credentials needed
-npm run report               # open the HTML report
+git clone https://github.com/youvegotnigel/toolshop-api-tests.git
+cd toolshop-api-tests
+npm ci
+cp .env.example .env.local
 ```
 
-## What the five tests cover
+Then set `ADMIN_PASSWORD` and `CUSTOMER_PASSWORD` in `.env.local`. This file is git-ignored.
 
-| Method | Test                                                  | Highlights                                        |
-| ------ | ----------------------------------------------------- | ------------------------------------------------- |
-| GET    | A shopper can open a brand and find it in the list    | Seeded by a fixture, contract on item and list    |
-| POST   | A new brand is created and matches the API contract   | 201, zod contract, cleanup registered immediately |
-| PUT    | Replacing a brand updates both its name and slug      | `{ success: true }`, read-back with `no-cache`    |
-| PATCH  | Renaming a brand changes only its name                | Partial update, slug unchanged                    |
-| DELETE | Only an admin can delete a brand, and it is then gone | Customer 403, admin 204, then 404                 |
+## Run
 
-Every test is written as business-language `test.step`s, so the HTML and Allure reports read like a checklist
-a manager can follow.
-
-## How it fits together
-
-```
-npm test
- └─ playwright.config.ts ── loads .env.local + .env.<TEST_ENV>, sets RUN_ID, reporters, projects
-     ├─ setup     tests/setup/environment.setup.ts      records the API version under test
-     ├─ api       tests/brands/*.spec.ts
-     │    └─ src/fixtures ── envGuard (auto) ─ admin/customer sessions (worker, JWT auto-renew)
-     │                      ─ api / adminApi / customerApi (recorded, correlation id)
-     │                      ─ brandsClient ... ─ cleanup ─ createBrand ─ createdBrand
-     └─ teardown  tests/setup/sweep-test-data.teardown.ts  deletes anything tagged qa-<RUN_ID>
- reports: list/line, HTML, JUnit, failure-summary.json (+ GitHub job summary), Allure with ALLURE=1
-```
-
-The full rule book is [AGENTS.md](AGENTS.md).
-
-## Quality gates
-
-- **TypeScript** strict, `noUncheckedIndexedAccess`.
-- **ESLint** (type-aware, zero warnings): `typescript-eslint` strict + stylistic, `eslint-plugin-playwright`,
-  plus framework guardrails that fail the build when a spec imports `@playwright/test` directly, uses the raw
-  `request` fixture, sleeps, skips `test.step`, or has no tags.
-- **Prettier**, **Husky + lint-staged** pre-commit, and a CI check that Claude Code and Copilot files stay in sync.
+| Command                                        | What it runs                                 |
+| ---------------------------------------------- | -------------------------------------------- |
+| `npm test`                                     | All tests against the public API             |
+| `npm run test:stub`                            | All tests against the offline stub, no setup |
+| `npm run test:smoke`                           | Tests tagged `@smoke`                        |
+| `npx playwright test --grep @delete`           | Tests for one method or tag                  |
+| `npm run verify`                               | Typecheck, lint, format check and all tests  |
+| `npm run report`                               | Opens the last HTML report                   |
+| `npm run test:allure && npm run allure:report` | Runs tests and opens the Allure report       |
 
 ## CI
 
-- **GitHub Actions** `.github/workflows/ci.yml`: quality gate, then tests on PRs, `main`, nightly and on demand
-  (choose `public` or `stub` and a tag). Add secrets `TOOLSHOP_ADMIN_PASSWORD` and `TOOLSHOP_CUSTOMER_PASSWORD`.
-- **Jenkins** `Jenkinsfile`: same stages in a `node:24` container; needs the Docker Pipeline, JUnit and
-  HTML Publisher plugins and Secret text credentials `toolshop-admin-password`, `toolshop-customer-password`.
-- **Spec drift** `.github/workflows/spec-drift.yml`: weekly comparison of the live OpenAPI operations with
-  `openapi/operations.lock.json`; opens an issue for an agent or engineer when they differ.
+- **GitHub Actions** (`.github/workflows/ci.yml`): add repository secrets `TOOLSHOP_ADMIN_PASSWORD` and
+  `TOOLSHOP_CUSTOMER_PASSWORD`. Without them, CI runs against the offline stub and shows a warning.
+- **Jenkins** (`Jenkinsfile`): add Secret text credentials `toolshop-admin-password` and
+  `toolshop-customer-password`. Requires the Docker Pipeline, JUnit and HTML Publisher plugins.
 
-## Working with AI agents
+## Project structure
 
-| Capability                 | Claude Code                                      | GitHub Copilot                                   |
-| -------------------------- | ------------------------------------------------ | ------------------------------------------------ |
-| Project rules              | `CLAUDE.md` imports `AGENTS.md`                  | `.github/copilot-instructions.md` -> `AGENTS.md` |
-| Skills (shared, one copy)  | `.claude/skills/*`                               | same folder, read natively                       |
-| Specialist agents          | `.claude/agents/*.md`                            | `.github/agents/*.agent.md`                      |
-| Commands / prompts         | `/verify`, `/new-api-test`, `/triage`, `/review` | `.github/prompts/*.prompt.md`                    |
-| Guardrails                 | lint-on-edit hook, permission rules              | path instructions, `copilot-setup-steps.yml`     |
-| Offline loop for sandboxes | `npm run test:stub`                              | same                                             |
+```
+src/clients     API clients, one per resource
+src/fixtures    Playwright fixtures: auth, clients, test data
+src/schemas     Response contracts (zod)
+src/data        Test data builders
+tests/          Specs, plus setup and teardown
+stub/           Offline stand-in for the Toolshop API
+```
 
-Example: `/new-api-test GET /products/{productId}` runs spec analysis, implementation and review in sequence.
-In Copilot cloud agent, file an **API test request** issue and assign it to Copilot.
+## Contributing
 
-## Good to know
+Coding rules, conventions and the AI agent setup (Claude Code and GitHub Copilot) are in [AGENTS.md](AGENTS.md).
 
-- The public API and its database are shared. Tests create their own data, tag it with `qa-<RUN_ID>`,
-  and clean it up; never depend on seeded ids.
-- Repeated failed logins lock the shared demo accounts, so the framework never retries a failed login.
-- The Toolshop licence does not allow redistributing its source or spec. This repo commits only the list of
-  operation names; `node scripts/spec-drift.mts --pull` downloads the spec locally (git-ignored).
-- TypeScript is pinned to 6.x because `typescript-eslint` 8 does not support TypeScript 7 yet.
+## License
+
+[MIT](LICENSE)
