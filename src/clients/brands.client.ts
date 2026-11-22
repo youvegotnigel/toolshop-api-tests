@@ -1,7 +1,7 @@
 import type { APIResponse } from '@playwright/test';
 import { BaseClient } from './base.client';
 import { NO_CACHE } from '../utils/http';
-import type { Brand, BrandInput, Message, UpdateResult } from '../schemas/brand.schema';
+import type { Brand, BrandInput, Message, UpdateResult, ValidationErrors } from '../schemas/brand.schema';
 
 /** Toolshop /brands: GET, POST, PUT and PATCH are public; DELETE needs an admin token. */
 export class BrandsClient extends BaseClient {
@@ -24,8 +24,8 @@ export class BrandsClient extends BaseClient {
   }
 
   /** Negative tests only: sends any body, valid or not. */
-  createRaw(body: unknown): Promise<APIResponse<Record<string, string[]>>> {
-    return this.request.post<Record<string, string[]>>(this.path, { data: body });
+  createRaw(body: unknown): Promise<APIResponse<ValidationErrors>> {
+    return this.request.post<ValidationErrors>(this.path, { data: body });
   }
 
   replace(id: string, brand: BrandInput): Promise<APIResponse<UpdateResult>> {
