@@ -1,14 +1,26 @@
+import { existsSync, readFileSync } from 'node:fs';
 import dotenv from 'dotenv';
 
 export type TestEnv = 'public' | 'stub';
 
 /**
- * Loads `.env.local` (personal secrets, git-ignored) and then `.env.<TEST_ENV>` (committed, no secrets).
- * Values already in `process.env` (CI secrets) always win because dotenv never overrides.
+ * Loads `.env.local` (personal secrets, git-ignored), then `.env.<TEST_ENV>` (committed, no secrets).
+ * Real values already in `process.env` (CI secrets) win, but an EMPTY value counts as missing:
+ * CI systems export unset secrets as '' and must not block the defaults.
+ * TEST_ENV=stub always uses the stub's fake credentials, even when real secrets are present.
  */
 export const loadEnvironment = (): TestEnv => {
   const name = (process.env.TEST_ENV ?? 'public') as TestEnv;
-  dotenv.config({ path: ['.env.local', `.env.${name}`], quiet: true });
+  const files = name === 'stub' ? ['.env.stub', '.env.local'] : ['.env.local', `.env.${name}`];
+  for (const file of files) {
+    if (!existsSync(file)) continue;
+    for (const [key, value] of Object.entries(dotenv.parse(readFileSync(file)))) {
+      const current = process.env[key];
+      if (current === undefined || current === '' || (name === 'stub' && file === '.env.stub')) {
+        process.env[key] = value;
+      }
+    }
+  }
   return name;
 };
 
