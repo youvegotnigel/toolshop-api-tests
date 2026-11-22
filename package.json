@@ -1,0 +1,56 @@
+{
+  "name": "toolshop-api-tests",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Agentic Playwright + TypeScript API test framework for the Practice Software Testing Toolshop API",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=24"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@faker-js/faker": "10.6.0",
+    "@playwright/test": "1.65.1",
+    "@types/node": "24.19.2",
+    "allure": "3.33.0",
+    "allure-playwright": "3.15.0",
+    "cross-env": "10.1.0",
+    "dotenv": "18.0.10",
+    "eslint": "10.15.0",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-playwright": "2.12.2",
+    "globals": "17.14.0",
+    "husky": "9.1.7",
+    "lint-staged": "17.6.2",
+    "prettier": "3.10.1",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.73.0",
+    "zod": "4.6.7"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:stub": "cross-env TEST_ENV=stub playwright test",
+    "test:shuffle": "playwright test --shuffle --repeat-each=3",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings=0",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "verify": "npm run typecheck && npm run lint && npm run format:check && npm test",
+    "report": "playwright show-report",
+    "allure:report": "allure generate ./allure-results && allure open",
+    "spec:check": "node scripts/spec-drift.mts",
+    "spec:update": "node scripts/spec-drift.mts --update",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,mts,mjs}": [
+      "eslint --fix --max-warnings=0",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  }
+}

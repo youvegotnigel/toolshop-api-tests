@@ -1,0 +1,16 @@
+/**
+ * Toolshop serves GET /brands responses with `Cache-Control: public, max-age=120`.
+ * Send this on reads that verify a write, so a cache can never return the old value.
+ */
+export const NO_CACHE: Readonly<Record<string, string>> = Object.freeze({ 'Cache-Control': 'no-cache' });
+
+export const HTTP = {
+  OK: 200,
+  CREATED: 201,
+  NO_CONTENT: 204,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  CONFLICT: 409,
+  UNPROCESSABLE: 422,
+} as const;

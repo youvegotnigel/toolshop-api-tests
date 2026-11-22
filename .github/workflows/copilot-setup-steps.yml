@@ -1,0 +1,25 @@
+# Prepares the environment GitHub Copilot cloud agent works in.
+# The job name must be exactly `copilot-setup-steps`.
+name: Copilot Setup Steps
+
+on:
+  workflow_dispatch:
+  push:
+    paths: [.github/workflows/copilot-setup-steps.yml]
+  pull_request:
+    paths: [.github/workflows/copilot-setup-steps.yml]
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Prove the offline loop works (no network needed)
+        run: npx cross-env TEST_ENV=stub npx playwright test

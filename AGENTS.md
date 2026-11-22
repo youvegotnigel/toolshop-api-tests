@@ -1,0 +1,98 @@
+# AGENTS.md
+
+Single source of truth for every contributor: humans, Claude Code and GitHub Copilot.
+`CLAUDE.md` and `.github/copilot-instructions.md` only point here. Change rules here, nowhere else.
+
+## Project
+
+Playwright + TypeScript API tests for the **Toolshop API** by Practice Software Testing
+(`https://api.practicesoftwaretesting.com`, OpenAPI 3.2, JWT auth, roles `admin` and `user`).
+Started with 5 tests, one per HTTP method on `/brands`; built to grow endpoint by endpoint.
+
+## Commands
+
+| Task                         | Command                                                    |
+| ---------------------------- | ---------------------------------------------------------- |
+| Everything a PR needs        | `npm run verify`                                           |
+| Tests against the public API | `npm test`                                                 |
+| Tests offline (no network)   | `npm run test:stub`                                        |
+| One tag                      | `npx playwright test --grep @smoke`                        |
+| Prove tests are independent  | `npm run test:shuffle`                                     |
+| Typecheck / lint / format    | `npm run typecheck`, `npm run lint`, `npm run format`      |
+| Spec drift / download spec   | `npm run spec:check`, `node scripts/spec-drift.mts --pull` |
+| Agent files in sync          | `node scripts/agent-parity.mts`                            |
+
+If your sandbox cannot reach `api.practicesoftwaretesting.com`, use `npm run test:stub` and say so in the PR.
+
+## Architecture
+
+```
+playwright.config.ts      env loading, RUN_ID, reporters, projects (setup, api, teardown)
+src/config/env.ts         .env.local + .env.<TEST_ENV>, env() fail-fast reader, runId()
+src/auth/auth-session.ts  worker-scoped login per role, auto-renews the ~5 min JWT
+src/fixtures/             auth -> clients -> data, re-exported by src/fixtures/index.ts
+src/clients/              one class per resource, endpoints only, typed APIResponse<T>
+src/schemas/              zod contracts; TypeScript types are inferred from them
+src/data/                 builders with faker; every record carries the run tag qa-<RUN_ID>
+src/utils/                logger (redacts secrets), api-recorder, HTTP codes, NO_CACHE
+src/reporting/            failure-tracker: failure-summary.json + GitHub job summary
+tests/<resource>/         specs, one file per behaviour
+tests/setup/              environment check (setup) and run-tag sweep (teardown)
+stub/toolshop-stub.mjs    offline stand-in for TEST_ENV=stub
+```
+
+Fixture graph: `adminSession`, `customerSession` (worker) -> `api`, `adminApi`, `customerApi` (test)
+-> `brandsClient`, `adminBrandsClient`, `customerBrandsClient` -> `cleanup` -> `createBrand` -> `createdBrand`.
+
+## Rules for every test (CI and ESLint enforce most of them)
+
+1. Import `test` and `expect` from `src/fixtures`, never from `@playwright/test`.
+2. Get clients, contexts and data from fixtures. No `request` or `playwright` fixture in specs, no other HTTP library.
+3. Describe the flow with `test.step` in plain business language, 2 to 6 flat steps (no nesting).
+   Managers read these in the HTML and Allure reports: "An admin deletes the brand", not "call DELETE".
+4. One `test.describe` per file named after the endpoint (`'DELETE /brands/{id}'`), and tag every test
+   with the resource and method (`@brands`, `@delete`); add `@smoke` only for critical paths.
+5. Assert the exact status first (`HTTP.CREATED`), then parse the body with its zod schema, then check values.
+6. Every record a test creates must be removed: use `createBrand`/`createdBrand`, or register
+   `cleanup.add(label, task)` right after creating it. Build data with `buildBrand()` so it carries the run tag.
+7. Reads that verify a write go through the client methods, which send `Cache-Control: no-cache`.
+8. No sleeps: `expect.poll` or `expect(...).toPass()` for eventual consistency.
+9. Tests must pass alone, in parallel and shuffled. Never share state through module variables.
+10. Negative tests use `createRaw` style client methods. Never weaken a schema to make a test pass.
+
+## Rules for framework code
+
+- Clients return `Promise<APIResponse<T>>` with explicit return types and never assert.
+- New resource: schema in `src/schemas`, builder in `src/data`, client in `src/clients`,
+  fixture in `src/fixtures/clients.fixtures.ts` (and a factory in `data.fixtures.ts` if tests create it).
+- Use `type`, not `interface` (fixture generics need it). No `any`, no non-null `!`, no `console` outside the logger.
+- Never add `eslint-disable` without a `-- reason`; never relax a lint rule to make code pass.
+
+## Toolshop facts that shape the tests
+
+- GET, POST, PUT and PATCH on `/brands` are public; DELETE needs an **admin** JWT
+  (customer gets 403 `Forbidden`, anonymous 401 `Unauthorized`). PUT/PATCH return `{ "success": true }`.
+- Unknown ids return 404 `{ "message": "Requested item not found" }`. Duplicate slug returns 409; other validation errors 422.
+- JWTs live about 5 minutes (`expires_in`). `AuthSession` renews them; never cache tokens yourself.
+- Repeated failed logins **lock the account** for everyone. Never write tests that guess passwords for the shared demo users.
+- The public database is shared and can be reset by others. Never depend on seeded ids or counts; create your own data.
+- GET responses carry `Cache-Control: public, max-age=120`. Verify writes with the client reads (they send `no-cache`).
+
+## Safety rules for AI agents
+
+- Never call `/refresh` (resets the shared database), `/users/forgot-password` or `/users/change-password`.
+- Never delete or modify data that does not carry this run's tag (`qa-<RUN_ID>`).
+- Never commit `.env.local`, tokens, passwords or downloaded specs (`openapi/toolshop.openapi.json` is git-ignored;
+  the Toolshop licence forbids redistributing it).
+- Never change an expected status or value just to make a red test green. Prove the API behaviour first
+  (call log in `api-calls.json`, the spec, or the stub) and explain it in the PR.
+- Definition of done: `npm run verify` is green (or `test:stub` when offline), `node scripts/agent-parity.mts` passes,
+  and the PR template checklist is filled in.
+
+## Agent toolkit
+
+Shared skills (read by both Claude Code and Copilot) live in `.claude/skills/`:
+`add-api-test`, `review-api-tests`, `triage-test-failures`, `check-spec-drift`.
+Personas: `.claude/agents/*.md` (Claude Code, VS Code) mirrored by `.github/agents/*.agent.md` (Copilot).
+Commands: `.claude/commands/*.md` mirrored by `.github/prompts/*.prompt.md`.
+When you change one side of a pair, change the other; CI checks they match.

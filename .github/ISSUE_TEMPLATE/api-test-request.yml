@@ -1,0 +1,35 @@
+name: API test request
+description: Ask for new API test coverage. Structured so Claude Code or Copilot cloud agent can implement it.
+title: 'tests: <METHOD> <endpoint>'
+labels: [api-tests]
+body:
+  - type: input
+    id: endpoint
+    attributes:
+      label: Endpoint
+      description: Method and path exactly as in the OpenAPI spec
+      placeholder: GET /products/{productId}
+    validations:
+      required: true
+  - type: textarea
+    id: scenarios
+    attributes:
+      label: Scenarios
+      description: One per line, in business language. These become test.step names.
+      placeholder: |
+        A shopper opens a product and sees its price and brand
+        An unknown product id returns 404
+    validations:
+      required: true
+  - type: dropdown
+    id: role
+    attributes:
+      label: Who performs the action?
+      options: [Anonymous shopper, Customer, Admin]
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes for the agent or engineer
+      description: Data setup, known bugs, links

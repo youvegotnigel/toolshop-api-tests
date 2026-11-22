@@ -1,0 +1,19 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      playwright:
+        patterns: ['@playwright/*']
+      lint:
+        patterns: ['eslint*', '@eslint/*', 'typescript-eslint', 'prettier', 'globals']
+    ignore:
+      # typescript-eslint 8.x supports TypeScript < 6.1; bump both together
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major']
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

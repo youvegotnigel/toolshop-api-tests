@@ -1,0 +1,84 @@
+import { writeFile } from 'node:fs/promises';
+import type { APIRequestContext, APIResponse, TestInfo } from '@playwright/test';
+import { logger, redact } from './logger';
+
+type Options = { data?: unknown; method?: string };
+type Send = (url: string, options?: Options) => Promise<APIResponse>;
+type Call = {
+  method: string;
+  url: string;
+  status: number | 'ERROR';
+  ms: number;
+  request?: unknown;
+  response?: APIResponse;
+  error?: string;
+};
+
+const VERBS: Readonly<Record<string, string>> = {
+  get: 'GET',
+  post: 'POST',
+  put: 'PUT',
+  patch: 'PATCH',
+  delete: 'DELETE',
+  head: 'HEAD',
+  fetch: 'FETCH',
+};
+const MAX_BODY_CHARS = 4_000;
+
+/**
+ * Wraps an APIRequestContext so every call is timed and logged (secrets redacted).
+ * Specs use it exactly like the real context.
+ */
+export class ApiRecorder {
+  private readonly calls: Call[] = [];
+
+  wrap(ctx: APIRequestContext): APIRequestContext {
+    return new Proxy(ctx, {
+      get: (target, prop): unknown => {
+        const value: unknown = Reflect.get(target, prop, target);
+        if (typeof value !== 'function') return value;
+        const original = (value as Send).bind(target);
+        if (typeof prop !== 'string' || !Object.hasOwn(VERBS, prop)) return original;
+        const verb = VERBS[prop] ?? prop.toUpperCase();
+        return (url: string, options?: Options): Promise<APIResponse> =>
+          this.send(original, verb, url, options);
+      },
+    });
+  }
+
+  /** Attaches every call, with response bodies, to the report: on failure only. */
+  async attachOnFailure(testInfo: TestInfo): Promise<void> {
+    if (testInfo.status === testInfo.expectedStatus || this.calls.length === 0) return;
+    const log = await Promise.all(
+      this.calls.map(async ({ response, ...call }) => ({
+        ...call,
+        responseBody:
+          response === undefined
+            ? undefined
+            : (await response.text().catch(() => '<unreadable>')).slice(0, MAX_BODY_CHARS),
+      })),
+    );
+    // Written to disk as well, so agents can read test-results/artifacts/<test>/api-calls.json
+    const file = testInfo.outputPath('api-calls.json');
+    await writeFile(file, JSON.stringify(log, null, 2));
+    await testInfo.attach('api-calls.json', { path: file, contentType: 'application/json' });
+    logger.error(`FAILED ${testInfo.titlePath.join(' > ')}: ${String(log.length)} API call(s) attached`);
+  }
+
+  private async send(original: Send, verb: string, url: string, options?: Options): Promise<APIResponse> {
+    const started = performance.now();
+    const method = options?.method ?? verb;
+    const request = redact(options?.data);
+    try {
+      const response = await original(url, options);
+      const ms = Math.round(performance.now() - started);
+      this.calls.push({ method, url: response.url(), status: response.status(), ms, request, response });
+      logger.debug(`${method} ${response.url()} -> ${String(response.status())} in ${String(ms)} ms`);
+      return response;
+    } catch (error) {
+      const ms = Math.round(performance.now() - started);
+      this.calls.push({ method, url, status: 'ERROR', ms, request, error: String(error) });
+      throw error;
+    }
+  }
+}

@@ -1,0 +1,72 @@
+name: api-tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '17 1 * * *' # nightly, 06:47 Sri Lanka time
+  workflow_dispatch:
+    inputs:
+      test_env:
+        description: Target environment
+        type: choice
+        options: [public, stub]
+        default: public
+      grep:
+        description: Optional tag filter, e.g. @smoke
+        required: false
+
+concurrency:
+  group: api-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Typecheck, lint, format
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run format:check
+      - run: node scripts/agent-parity.mts
+
+  test:
+    name: API tests (${{ inputs.test_env || 'public' }})
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CI: true
+      TEST_ENV: ${{ inputs.test_env || 'public' }}
+      ADMIN_PASSWORD: ${{ secrets.TOOLSHOP_ADMIN_PASSWORD }}
+      CUSTOMER_PASSWORD: ${{ secrets.TOOLSHOP_CUSTOMER_PASSWORD }}
+      ALLURE: 1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci # API tests need no browsers: no "playwright install" step
+      - name: Run tests
+        run: npx playwright test ${{ inputs.grep && format('--grep "{0}"', inputs.grep) || '' }}
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: test-reports-${{ github.run_id }}
+          retention-days: 14
+          path: |
+            playwright-report/
+            test-results/
+            allure-results/
