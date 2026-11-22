@@ -30,6 +30,7 @@ If your sandbox cannot reach `api.practicesoftwaretesting.com`, use `npm run tes
 playwright.config.ts      env loading, RUN_ID, reporters, projects (setup, api, teardown)
 src/config/env.ts         .env.local + .env.<TEST_ENV>, env() fail-fast reader, runId()
 src/auth/auth-session.ts  worker-scoped login per role, auto-renews the ~5 min JWT
+src/clients/users.client  registers and removes the throwaway customer used by each worker
 src/fixtures/             auth -> clients -> data, re-exported by src/fixtures/index.ts
 src/clients/              one class per resource, endpoints only, typed APIResponse<T>
 src/schemas/              zod contracts; TypeScript types are inferred from them
@@ -41,7 +42,7 @@ tests/setup/              environment check (setup) and run-tag sweep (teardown)
 stub/toolshop-stub.mjs    offline stand-in for TEST_ENV=stub
 ```
 
-Fixture graph: `adminSession`, `customerSession` (worker) -> `api`, `adminApi`, `customerApi` (test)
+Fixture graph: `adminSession`, `customerSession` (worker; registers its own customer) -> `api`, `adminApi`, `customerApi` (test)
 -> `brandsClient`, `adminBrandsClient`, `customerBrandsClient` -> `cleanup` -> `createBrand` -> `createdBrand`.
 
 ## Rules for every test (CI and ESLint enforce most of them)
@@ -74,7 +75,10 @@ Fixture graph: `adminSession`, `customerSession` (worker) -> `api`, `adminApi`, 
   (customer gets 403 `Forbidden`, anonymous 401 `Unauthorized`). PUT/PATCH return `{ "success": true }`.
 - Unknown ids return 404 `{ "message": "Requested item not found" }`. Duplicate slug returns 409; other validation errors 422.
 - JWTs live about 5 minutes (`expires_in`). `AuthSession` renews them; never cache tokens yourself.
-- Repeated failed logins **lock the account** for everyone. Never write tests that guess passwords for the shared demo users.
+- Repeated failed logins **lock non-admin accounts** for everyone (HTTP 423); admin accounts never lock. The shared demo
+  customer is often locked by other people, so each worker registers its own customer (run-tagged email) and the admin
+  deletes it after the run. Never write tests that guess passwords for the shared demo users.
+- `GET /users/search` returns a paginated object (`{ data: [...] }`), not the array the spec documents.
 - The public database is shared and can be reset by others. Never depend on seeded ids or counts; create your own data.
 - GET responses carry `Cache-Control: public, max-age=120`. Verify writes with the client reads (they send `no-cache`).
 

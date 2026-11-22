@@ -6,10 +6,12 @@ import { randomBytes } from 'node:crypto';
 
 const PORT = Number(process.env.STUB_PORT ?? 8091);
 const TTL_SECONDS = Number(process.env.STUB_JWT_TTL ?? 300);
-const USERS = {
-  'admin@practicesoftwaretesting.com': { password: 'stub-password', role: 'admin' },
-  'customer@practicesoftwaretesting.com': { password: 'stub-password', role: 'user' },
-};
+const USERS = new Map([
+  [
+    'admin@practicesoftwaretesting.com',
+    { id: 'ADMIN', password: 'stub-password', role: 'admin', first_name: 'Admin', last_name: 'Stub' },
+  ],
+]);
 const SLUG = /^[A-Za-z0-9_-]+$/;
 const brands = new Map();
 const tokens = new Map();
@@ -76,11 +78,47 @@ http
       return send(res, 200, { version: 'stub-5.0.0', environment: 'stub', app_name: 'Toolshop stub' });
 
     if (url.pathname === '/users/login' && req.method === 'POST') {
-      const user = USERS[body.email];
+      const user = USERS.get(body.email);
       if (!user || user.password !== body.password) return send(res, 401, { error: 'Unauthorized' });
       const token = randomBytes(24).toString('base64url');
       tokens.set(token, { role: user.role, expiresAt: Date.now() + TTL_SECONDS * 1000 });
       return send(res, 200, { access_token: token, token_type: 'bearer', expires_in: TTL_SECONDS });
+    }
+
+    if (url.pathname === '/users/register' && req.method === 'POST') {
+      const missing = ['first_name', 'last_name', 'email', 'password'].filter((f) => !body[f]);
+      if (missing.length > 0)
+        return send(res, 422, Object.fromEntries(missing.map((f) => [f, [`The ${f} field is required.`]])));
+      if (USERS.has(body.email))
+        return send(res, 409, { email: ['A customer with this email address already exists.'] });
+      const user = { id: newId(), role: 'user', ...body };
+      USERS.set(user.email, user);
+      return send(res, 201, {
+        id: user.id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+      });
+    }
+    if (parts[0] === 'users') {
+      const role = roleOf(req);
+      if (!role) return send(res, 401, { message: 'Unauthorized' });
+      if (role !== 'admin') return send(res, 403, { message: 'Forbidden' });
+      if (parts[1] === 'search' && req.method === 'GET') {
+        const q = (url.searchParams.get('q') ?? '').toLowerCase();
+        const data = [...USERS.values()]
+          .filter(
+            (u) => u.role === 'user' && `${u.first_name} ${u.last_name} ${u.email}`.toLowerCase().includes(q),
+          )
+          .map(({ id, first_name, last_name, email }) => ({ id, first_name, last_name, email }));
+        return send(res, 200, { current_page: 1, data, total: data.length });
+      }
+      if (parts.length === 2 && req.method === 'DELETE') {
+        const user = [...USERS.values()].find((u) => u.id === parts[1]);
+        if (!user) return send(res, 404, { message: 'Requested item not found' });
+        USERS.delete(user.email);
+        return send(res, 204);
+      }
     }
 
     if (parts[0] !== 'brands') return send(res, 404, { message: 'Resource not found' });

@@ -1,6 +1,6 @@
 // Declarative pipeline mirroring .github/workflows/ci.yml.
 // Needs: Docker Pipeline, JUnit, HTML Publisher plugins (Allure Jenkins plugin optional).
-// Credentials (Secret text): toolshop-admin-password, toolshop-customer-password.
+// Credentials (Secret text): toolshop-admin-password.
 pipeline {
   agent {
     docker {
@@ -29,7 +29,6 @@ pipeline {
     TEST_ENV = "${params.TEST_ENV}"
     ALLURE = '1'
     ADMIN_PASSWORD = credentials('toolshop-admin-password')
-    CUSTOMER_PASSWORD = credentials('toolshop-customer-password')
     HUSKY = '0'
   }
 

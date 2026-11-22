@@ -5,9 +5,12 @@ import {
   type TestInfo,
 } from '@playwright/test';
 import { AuthSession } from '../auth/auth-session';
+import { UsersClient } from '../clients/users.client';
+import { buildCustomer } from '../data/user.builder';
 import { env } from '../config/env';
 import { ApiRecorder } from '../utils/api-recorder';
-import type { Role } from '../schemas/auth.schema';
+import { RegisteredUserSchema } from '../schemas/user.schema';
+import { logger } from '../utils/logger';
 
 type WorkerFixtures = {
   /** auto: fails the worker fast when the API is down, before any test runs. */
@@ -27,20 +30,10 @@ type TestFixtures = {
 
 type Playwright = PlaywrightWorkerArgs['playwright'];
 
-const credentialsFor = (role: Role): { email: string; password: string } =>
-  role === 'admin'
-    ? { email: env('ADMIN_EMAIL'), password: env('ADMIN_PASSWORD') }
-    : { email: env('CUSTOMER_EMAIL'), password: env('CUSTOMER_PASSWORD') };
-
-const workerSession = async (
-  playwright: Playwright,
-  role: Role,
-  use: (session: AuthSession) => Promise<void>,
-): Promise<void> => {
-  const ctx = await playwright.request.newContext({ baseURL: env('API_BASE_URL') });
-  await use(new AuthSession(ctx, role, credentialsFor(role)));
-  await ctx.dispose();
-};
+const adminCredentials = (): { email: string; password: string } => ({
+  email: env('ADMIN_EMAIL'),
+  password: env('ADMIN_PASSWORD'),
+});
 
 /** Builds a recorded, correlated context and guarantees evidence + disposal after the test. */
 const recordedContext = async (
@@ -81,16 +74,37 @@ export const test = base.extend<TestFixtures, WorkerFixtures>({
 
   adminSession: [
     async ({ playwright }, use) => {
-      await workerSession(playwright, 'admin', use);
+      const ctx = await playwright.request.newContext({ baseURL: env('API_BASE_URL') });
+      await use(new AuthSession(ctx, 'admin', adminCredentials()));
+      await ctx.dispose();
     },
     { scope: 'worker', title: 'admin login (once per worker)' },
   ],
 
+  // Shared demo customers get locked by other people's failed logins (HTTP 423), so every
+  // worker registers its own throwaway customer and the admin deletes it afterwards.
   customerSession: [
-    async ({ playwright }, use) => {
-      await workerSession(playwright, 'customer', use);
+    async ({ playwright, adminSession }, use) => {
+      const ctx = await playwright.request.newContext({ baseURL: env('API_BASE_URL') });
+      const customer = buildCustomer();
+      const res = await new UsersClient(ctx).register(customer);
+      if (!res.ok()) throw new Error(`Registering a test customer failed with HTTP ${String(res.status())}`);
+      const user = RegisteredUserSchema.parse(await res.json());
+      logger.info(`Registered test customer ${user.id}`);
+
+      await use(new AuthSession(ctx, 'customer', { email: customer.email, password: customer.password }));
+
+      const admin = await playwright.request.newContext({
+        baseURL: env('API_BASE_URL'),
+        extraHTTPHeaders: { Authorization: await adminSession.bearer() },
+      });
+      const removed = await new UsersClient(admin).remove(user.id);
+      if (!removed.ok())
+        logger.warn(`Could not delete test customer ${user.id}: HTTP ${String(removed.status())}`);
+      await admin.dispose();
+      await ctx.dispose();
     },
-    { scope: 'worker', title: 'customer login (once per worker)' },
+    { scope: 'worker', title: 'register and log in a throwaway customer (once per worker)' },
   ],
 
   api: async ({ playwright, baseURL }, use, testInfo) => {

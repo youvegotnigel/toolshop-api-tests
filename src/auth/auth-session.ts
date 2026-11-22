@@ -5,6 +5,7 @@ import { logger } from '../utils/logger';
 
 /** Refresh this long before expiry, so a token never dies mid-test. */
 const REFRESH_MARGIN_MS = 60_000;
+const LOCKED = 423;
 
 /**
  * One logged-in identity per worker. Toolshop JWTs live about 5 minutes,
@@ -30,8 +31,14 @@ export class AuthSession {
 
   private async login(): Promise<void> {
     const res = await new AuthClient(this.request).login(this.credentials);
+    if (res.status() === LOCKED) {
+      throw new Error(
+        `Login as ${this.role} failed with HTTP 423: the account is locked after too many failed logins ` +
+          '(on the public API usually by other users). This is an environment problem, not a test failure.',
+      );
+    }
     if (!res.ok()) {
-      // Never retry: Toolshop locks accounts after repeated failed logins.
+      // Never retry: Toolshop locks non-admin accounts after repeated failed logins.
       throw new Error(`Login as ${this.role} failed with HTTP ${String(res.status())}. Check credentials.`);
     }
     const token = TokenSchema.parse(await res.json());

@@ -1,5 +1,6 @@
 import { test as authTest } from './auth.fixtures';
 import { BrandsClient } from '../clients/brands.client';
+import { UsersClient } from '../clients/users.client';
 
 type ClientFixtures = {
   /** Anonymous shopper. */
@@ -8,6 +9,8 @@ type ClientFixtures = {
   adminBrandsClient: BrandsClient;
   /** Logged-in customer. */
   customerBrandsClient: BrandsClient;
+  /** Admin user management (search, delete). */
+  adminUsersClient: UsersClient;
 };
 
 // Lazy: a client (and its login) is only created when a test asks for it.
@@ -20,5 +23,8 @@ export const test = authTest.extend<ClientFixtures>({
   },
   customerBrandsClient: async ({ customerApi }, use) => {
     await use(new BrandsClient(customerApi));
+  },
+  adminUsersClient: async ({ adminApi }, use) => {
+    await use(new UsersClient(adminApi));
   },
 });
