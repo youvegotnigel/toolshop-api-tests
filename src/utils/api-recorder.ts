@@ -10,7 +10,7 @@ type Call = {
   status: number | 'ERROR';
   ms: number;
   request?: unknown;
-  response?: APIResponse;
+  responseBody?: string;
   error?: string;
 };
 
@@ -46,23 +46,18 @@ export class ApiRecorder {
     });
   }
 
-  /** Attaches every call, with response bodies, to the report: on failure only. */
+  /**
+   * Attaches every call of the test, with response bodies, to the report: on failure only.
+   * Written to disk as well, so agents can read test-results/artifacts/<test>/api-calls.json.
+   */
   async attachOnFailure(testInfo: TestInfo): Promise<void> {
     if (testInfo.status === testInfo.expectedStatus || this.calls.length === 0) return;
-    const log = await Promise.all(
-      this.calls.map(async ({ response, ...call }) => ({
-        ...call,
-        responseBody:
-          response === undefined
-            ? undefined
-            : (await response.text().catch(() => '<unreadable>')).slice(0, MAX_BODY_CHARS),
-      })),
-    );
-    // Written to disk as well, so agents can read test-results/artifacts/<test>/api-calls.json
     const file = testInfo.outputPath('api-calls.json');
-    await writeFile(file, JSON.stringify(log, null, 2));
+    await writeFile(file, JSON.stringify(this.calls, null, 2));
     await testInfo.attach('api-calls.json', { path: file, contentType: 'application/json' });
-    logger.error(`FAILED ${testInfo.titlePath.join(' > ')}: ${String(log.length)} API call(s) attached`);
+    logger.error(
+      `FAILED ${testInfo.titlePath.join(' > ')}: ${String(this.calls.length)} API call(s) attached`,
+    );
   }
 
   private async send(original: Send, verb: string, url: string, options?: Options): Promise<APIResponse> {
@@ -72,7 +67,9 @@ export class ApiRecorder {
     try {
       const response = await original(url, options);
       const ms = Math.round(performance.now() - started);
-      this.calls.push({ method, url: response.url(), status: response.status(), ms, request, response });
+      // Read now: bodies are gone once the context is disposed in fixture teardown.
+      const responseBody = (await response.text().catch(() => '<unreadable>')).slice(0, MAX_BODY_CHARS);
+      this.calls.push({ method, url: response.url(), status: response.status(), ms, request, responseBody });
       logger.debug(`${method} ${response.url()} -> ${String(response.status())} in ${String(ms)} ms`);
       return response;
     } catch (error) {

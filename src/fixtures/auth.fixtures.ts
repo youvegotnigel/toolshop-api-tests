@@ -1,9 +1,4 @@
-import {
-  test as base,
-  type APIRequestContext,
-  type PlaywrightWorkerArgs,
-  type TestInfo,
-} from '@playwright/test';
+import { test as base, type APIRequestContext, type PlaywrightWorkerArgs } from '@playwright/test';
 import { AuthSession } from '../auth/auth-session';
 import { UsersClient } from '../clients/users.client';
 import { buildCustomer } from '../data/user.builder';
@@ -20,6 +15,10 @@ type WorkerFixtures = {
 };
 
 type TestFixtures = {
+  /** One id per test, sent as X-Correlation-Id by every context: search it in the API's logs. */
+  correlationId: string;
+  /** One call log per test, shared by every context; attached to the report when the test fails. */
+  apiRecorder: ApiRecorder;
   /** Anonymous context: what a shopper without an account can do. */
   api: APIRequestContext;
   /** Authenticated as the Toolshop admin. */
@@ -35,27 +34,28 @@ const adminCredentials = (): { email: string; password: string } => ({
   password: env('ADMIN_PASSWORD'),
 });
 
-/** Builds a recorded, correlated context and guarantees evidence + disposal after the test. */
+type RecordingOptions = {
+  correlationId: string;
+  apiRecorder: ApiRecorder;
+  authorization?: string;
+};
+
+/** Builds a context that shares the test's correlation id and call recorder, and disposes it afterwards. */
 const recordedContext = async (
   playwright: Playwright,
   baseURL: string | undefined,
-  testInfo: TestInfo,
+  options: RecordingOptions,
   use: (ctx: APIRequestContext) => Promise<void>,
-  authorization?: string,
 ): Promise<void> => {
-  const correlationId = crypto.randomUUID();
-  testInfo.annotations.push({ type: 'correlation-id', description: correlationId });
   const ctx = await playwright.request.newContext({
     baseURL,
     extraHTTPHeaders: {
       Accept: 'application/json',
-      'X-Correlation-Id': correlationId,
-      ...(authorization === undefined ? {} : { Authorization: authorization }),
+      'X-Correlation-Id': options.correlationId,
+      ...(options.authorization === undefined ? {} : { Authorization: options.authorization }),
     },
   });
-  const recorder = new ApiRecorder();
-  await use(recorder.wrap(ctx));
-  await recorder.attachOnFailure(testInfo);
+  await use(options.apiRecorder.wrap(ctx));
   await ctx.dispose();
 };
 
@@ -107,15 +107,31 @@ export const test = base.extend<TestFixtures, WorkerFixtures>({
     { scope: 'worker', title: 'register and log in a throwaway customer (once per worker)' },
   ],
 
-  api: async ({ playwright, baseURL }, use, testInfo) => {
-    await recordedContext(playwright, baseURL, testInfo, use);
+  // eslint-disable-next-line no-empty-pattern -- Playwright fixtures must destructure their first argument
+  correlationId: async ({}, use, testInfo) => {
+    const id = crypto.randomUUID();
+    testInfo.annotations.push({ type: 'correlation-id', description: id });
+    await use(id);
   },
 
-  adminApi: async ({ playwright, baseURL, adminSession }, use, testInfo) => {
-    await recordedContext(playwright, baseURL, testInfo, use, await adminSession.bearer());
+  // eslint-disable-next-line no-empty-pattern -- Playwright fixtures must destructure their first argument
+  apiRecorder: async ({}, use, testInfo) => {
+    const recorder = new ApiRecorder();
+    await use(recorder);
+    await recorder.attachOnFailure(testInfo);
   },
 
-  customerApi: async ({ playwright, baseURL, customerSession }, use, testInfo) => {
-    await recordedContext(playwright, baseURL, testInfo, use, await customerSession.bearer());
+  api: async ({ playwright, baseURL, correlationId, apiRecorder }, use) => {
+    await recordedContext(playwright, baseURL, { correlationId, apiRecorder }, use);
+  },
+
+  adminApi: async ({ playwright, baseURL, correlationId, apiRecorder, adminSession }, use) => {
+    const authorization = await adminSession.bearer();
+    await recordedContext(playwright, baseURL, { correlationId, apiRecorder, authorization }, use);
+  },
+
+  customerApi: async ({ playwright, baseURL, correlationId, apiRecorder, customerSession }, use) => {
+    const authorization = await customerSession.bearer();
+    await recordedContext(playwright, baseURL, { correlationId, apiRecorder, authorization }, use);
   },
 });

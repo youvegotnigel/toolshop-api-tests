@@ -35,14 +35,15 @@ src/fixtures/             auth -> clients -> data, re-exported by src/fixtures/i
 src/clients/              one class per resource, endpoints only, typed APIResponse<T>
 src/schemas/              zod contracts; TypeScript types are inferred from them
 src/data/                 builders with faker; every record carries the run tag qa-<RUN_ID>
-src/utils/                logger (redacts secrets), api-recorder, HTTP codes, NO_CACHE
+src/utils/                logger (redacts secrets), api-recorder (one call log per test), HTTP codes, NO_CACHE
 src/reporting/            failure-tracker: failure-summary.json + GitHub job summary
 tests/<resource>/         specs, one file per behaviour
 tests/setup/              environment check (setup) and run-tag sweep (teardown)
 stub/toolshop-stub.mjs    offline stand-in for TEST_ENV=stub
 ```
 
-Fixture graph: `adminSession`, `customerSession` (worker; registers its own customer) -> `api`, `adminApi`, `customerApi` (test)
+Fixture graph: `adminSession`, `customerSession` (worker; registers its own customer) and `correlationId`, `apiRecorder`
+(test; one per test, shared by every context) -> `api`, `adminApi`, `customerApi`
 -> `brandsClient`, `adminBrandsClient`, `customerBrandsClient` -> `cleanup` -> `createBrand` -> `createdBrand`.
 
 ## Rules for every test (CI and ESLint enforce most of them)
