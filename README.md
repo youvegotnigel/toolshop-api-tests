@@ -95,6 +95,11 @@ stub/           Offline stand-in for the Toolshop API
 docs/images     Report screenshots
 ```
 
+## Reference
+
+- [Playwright API testing mind map](https://claude.ai/artifact/HV5QFHMyWAnocRhT5ddv9F): the fixture, request and
+  best-practice reference this framework follows.
+
 ## Contributing
 
 Coding rules, conventions and the AI agent setup are in [AGENTS.md](AGENTS.md).
