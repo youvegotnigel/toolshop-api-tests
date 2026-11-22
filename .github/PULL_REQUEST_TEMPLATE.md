@@ -13,6 +13,7 @@
 - [ ] `npm run verify` passes locally (typecheck, lint, format, tests)
 - [ ] Specs import `test`/`expect` from `src/fixtures` and get clients and data from fixtures
 - [ ] Every test is tagged and reads as `test.step` business steps
+- [ ] Extra operations declared with a `covers` annotation; `@negative` / `@auth` tags where they apply
 - [ ] Response contracts are validated with zod schemas
 - [ ] Every created record is cleaned up (`cleanup` / factory fixture)
 - [ ] No secrets, tokens or personal data in code, logs or attachments

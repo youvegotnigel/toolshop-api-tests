@@ -55,6 +55,16 @@ pipeline {
 
   post {
     always {
+      // Workspace keeps allure-history/ and coverage-history/ between builds for trends
+      sh 'scripts/ci/build-site.sh || true'
+      publishHTML(target: [
+        reportName: 'Automation Dashboard',
+        reportDir: 'site',
+        reportFiles: 'index.html',
+        keepAll: true,
+        alwaysLinkToLastBuild: true,
+        allowMissing: true,
+      ])
       junit allowEmptyResults: true, testResults: 'test-results/junit.xml'
       publishHTML(target: [
         reportName: 'Playwright Report',
@@ -64,7 +74,7 @@ pipeline {
         alwaysLinkToLastBuild: true,
         allowMissing: true,
       ])
-      archiveArtifacts artifacts: 'test-results/**, allure-results/**', allowEmptyArchive: true
+      archiveArtifacts artifacts: 'site/**, test-results/**', allowEmptyArchive: true
       // allure includeProperties: false, results: [[path: 'allure-results']]   // with the Allure plugin
     }
   }

@@ -21,6 +21,7 @@ Started with 5 tests, one per HTTP method on `/brands`; built to grow endpoint b
 | Typecheck / lint / format    | `npm run typecheck`, `npm run lint`, `npm run format`      |
 | Spec drift / download spec   | `npm run spec:check`, `node scripts/spec-drift.mts --pull` |
 | Agent files in sync          | `node scripts/agent-parity.mts`                            |
+| Dashboard + reports locally  | `npm run report:site` (after a run with `ALLURE=1`)        |
 
 If your sandbox cannot reach `api.practicesoftwaretesting.com`, use `npm run test:stub` and say so in the PR.
 
@@ -37,6 +38,9 @@ src/schemas/              zod contracts; TypeScript types are inferred from them
 src/data/                 builders with faker; every record carries the run tag qa-<RUN_ID>
 src/utils/                logger (redacts secrets), api-recorder (one call log per test), HTTP codes, NO_CACHE
 src/reporting/            failure-tracker: failure-summary.json + GitHub job summary
+scripts/coverage/         automation dashboard (pass rate, spec coverage, critical flows, trends)
+scripts/ci/               report history restore, site build, GitHub Pages publish (gh-pages)
+coverage.config.json      dashboard settings: target coverage and the critical operations list
 tests/<resource>/         specs, one file per behaviour
 tests/setup/              environment check (setup) and run-tag sweep (teardown)
 stub/toolshop-stub.mjs    offline stand-in for TEST_ENV=stub
@@ -54,6 +58,9 @@ Fixture graph: `adminSession`, `customerSession` (worker; registers its own cust
    Managers read these in the HTML and Allure reports: "An admin deletes the brand", not "call DELETE".
 4. One `test.describe` per file named after the endpoint (`'DELETE /brands/{id}'`), and tag every test
    with the resource and method (`@brands`, `@delete`); add `@smoke` only for critical paths.
+   The describe title is also how the **automation dashboard** counts coverage. If a test exercises another
+   operation too, declare it: `{ annotation: { type: 'covers', description: 'GET /brands/{id}' } }`.
+   Tag scenario depth: `@negative` for error/validation cases, `@auth` for permission checks.
 5. Assert the exact status first (`HTTP.CREATED`), then parse the body with its zod schema, then check values.
 6. Every record a test creates must be removed: use `createBrand`/`createdBrand`, or register
    `cleanup.add(label, task)` right after creating it. Build data with `buildBrand()` so it carries the run tag.

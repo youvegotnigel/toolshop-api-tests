@@ -8,6 +8,9 @@ playwright-report/
 allure-results/
 allure-report/
 allure-history/
+coverage-history/
+site/
 openapi/toolshop.openapi.json
 .claude/settings.local.json
 .DS_Store
+.gh-pages/

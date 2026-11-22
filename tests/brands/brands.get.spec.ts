@@ -5,7 +5,7 @@ import { HTTP } from '../../src/utils/http';
 test.describe('GET /brands', { tag: ['@brands', '@get'] }, () => {
   test(
     'a shopper can open a brand and find it in the brand list',
-    { tag: '@smoke' },
+    { tag: '@smoke', annotation: { type: 'covers', description: 'GET /brands/{id}' } },
     async ({ brandsClient, createdBrand }) => {
       await test.step('Open the brand by its id', async () => {
         const res = await brandsClient.getById(createdBrand.id);

@@ -6,3 +6,6 @@ allure-results/
 allure-report/
 openapi/*.json
 .auth/
+site/
+coverage-history/
+allure-history/

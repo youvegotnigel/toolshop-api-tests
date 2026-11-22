@@ -42,7 +42,10 @@
     "allure:report": "allure generate ./allure-results && allure open",
     "spec:check": "node scripts/spec-drift.mts",
     "spec:update": "node scripts/spec-drift.mts --update",
-    "prepare": "husky"
+    "prepare": "husky",
+    "report:dashboard": "node scripts/coverage/index.mts",
+    "report:site": "npm run allure:generate && node scripts/coverage/index.mts",
+    "allure:generate": "allure generate ./allure-results"
   },
   "lint-staged": {
     "*.{ts,mts,mjs}": [

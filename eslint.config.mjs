@@ -21,6 +21,9 @@ export default defineConfig(
     'test-results/',
     'allure-results/',
     'allure-report/',
+    'allure-history/',
+    'coverage-history/',
+    'site/',
     'openapi/*.json',
   ]),
 

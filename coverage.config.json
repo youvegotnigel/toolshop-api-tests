@@ -1,0 +1,26 @@
+{
+  "suite": {
+    "name": "Toolshop API tests",
+    "framework": "Playwright",
+    "group": "Toolshop · API regression"
+  },
+  "targetCoverage": 80,
+  "staleAfterHours": 48,
+  "projects": ["api"],
+  "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  "critical": [
+    "POST /users/register",
+    "POST /users/login",
+    "GET /users/me",
+    "GET /products",
+    "GET /products/search",
+    "GET /products/{productId}",
+    "POST /carts",
+    "POST /carts/{id}",
+    "GET /carts/{cartId}",
+    "PUT /carts/{cartId}/product/quantity",
+    "POST /payment/check",
+    "POST /invoices",
+    "GET /invoices/{invoiceId}"
+  ]
+}

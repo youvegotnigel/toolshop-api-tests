@@ -23,6 +23,7 @@ export default defineConfig({
     [isCI ? 'line' : 'list'],
     ['html', { open: 'never' }],
     ['junit', { outputFile: 'test-results/junit.xml' }], // GitHub Actions + Jenkins
+    ['json', { outputFile: 'test-results/results.json' }], // coverage dashboard input
     ['./src/reporting/failure-tracker.ts'],
     ...optionalReporters,
   ],

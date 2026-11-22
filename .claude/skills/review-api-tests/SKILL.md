@@ -18,6 +18,7 @@ Blocking (must fix before merge):
 
 - [ ] Imports `test`/`expect` only from `src/fixtures`; no `request`/`playwright` fixture, no other HTTP library
 - [ ] Every test has a `test.describe('<METHOD> <path>')` parent, tags, and 2 to 6 flat `test.step` calls
+- [ ] Every other operation a test verifies is declared with a `covers` annotation; negative and permission scenarios carry `@negative` / `@auth`
 - [ ] Step names are business language a manager understands (no method names, status codes as the whole name, or "step 1")
 - [ ] Exact status asserted before the body; body validated with a zod schema
 - [ ] Every created record is removed via a factory fixture or `cleanup.add` registered immediately after creation

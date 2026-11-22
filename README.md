@@ -18,8 +18,24 @@ Each test checks status codes, the response contract and the business rule, crea
 - **Failure evidence**: one correlation id per test, plus a full API call log (`api-calls.json`) and a trace when a test fails.
 - **Offline mode**: a built-in stub runs the whole suite with no network or credentials.
 - **Strict code quality**: type-aware ESLint with Playwright rules, Prettier, and pre-commit hooks.
-- **CI ready**: GitHub Actions and Jenkins, with JUnit, HTML and Allure reports.
+- **Automation dashboard**: pass rate, API coverage against the OpenAPI spec, critical-flow coverage and trends,
+  published with the Allure and Playwright reports to GitHub Pages on every `main` run.
+- **CI ready**: GitHub Actions and Jenkins, with JUnit, HTML and Allure reports (with run history).
 - **AI-agent ready**: shared instructions, skills, agents and prompts for Claude Code and GitHub Copilot (see [AGENTS.md](AGENTS.md)).
+
+## Automation dashboard
+
+Live: **https://youvegotnigel.github.io/toolshop-api-tests/** (updated on every `main` and nightly run).
+
+A one-page view for managers: how healthy the suite is, how much of the API it covers, and the trend.
+Coverage counts the OpenAPI operations that have at least one test; critical flows are listed in
+`coverage.config.json`.
+
+![Automation dashboard](docs/images/coverage-dashboard.png)
+
+**Coverage heatmap**: covered / total operations per resource and method. A dark border marks negative or auth scenarios.
+
+![Coverage heatmap](docs/images/coverage-heatmap.png)
 
 ## Reports
 
@@ -74,14 +90,16 @@ Then set `ADMIN_PASSWORD` in `.env.local`. This file is git-ignored.
 | `npx playwright test --grep @delete`           | Tests for one method or tag                             |
 | `npm run verify`                               | Typecheck, lint, format check and all tests             |
 | `npm run report`                               | Opens the last HTML report                              |
+| `npm run report:site`                          | Builds the dashboard and reports into `site/`           |
 | `npm run test:allure && npm run allure:report` | Runs tests and opens the Allure report (`allurerc.yml`) |
 
 ## CI
 
 - **GitHub Actions** (`.github/workflows/ci.yml`): add the repository secret `TOOLSHOP_ADMIN_PASSWORD`.
-  Without it, CI runs against the offline stub and shows a warning.
+  Without it, CI runs against the offline stub and shows a warning. Runs on `main` publish the dashboard and reports
+  to the `gh-pages` branch; enable **Settings > Pages > Deploy from a branch > `gh-pages` / root** once.
 - **Jenkins** (`Jenkinsfile`): add a Secret text credential `toolshop-admin-password`.
-  Requires the Docker Pipeline, JUnit and HTML Publisher plugins.
+  Requires the Docker Pipeline, JUnit and HTML Publisher plugins. The dashboard is published as **Automation Dashboard**.
 
 ## Project structure
 
@@ -92,6 +110,8 @@ src/schemas     Response contracts (zod)
 src/data        Test data builders
 tests/          Specs, plus setup and teardown
 stub/           Offline stand-in for the Toolshop API
+scripts/coverage  Automation dashboard generator
+scripts/ci      Report history, site build and GitHub Pages publishing
 docs/images     Report screenshots
 ```
 

@@ -48,6 +48,11 @@ test.describe('GET /brands/{id}', { tag: ['@brands', '@get'] }, () => {
 
 Step names are for a manager reading the report: who does what, in plain words, 2 to 6 flat steps.
 
+The describe title (`METHOD /path`) feeds the automation dashboard's coverage. Add
+`annotation: { type: 'covers', description: 'METHOD /path' }` for any other operation the test verifies,
+and tag `@negative` or `@auth` scenarios so the dashboard shows coverage depth.
+If the endpoint is in `coverage.config.json` `critical`, say so in the PR: it moves the critical-flows number.
+
 ## 4. Prove it
 
 1. `npm run lint && npm run typecheck`

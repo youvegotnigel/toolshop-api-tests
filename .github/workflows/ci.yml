@@ -46,6 +46,8 @@ jobs:
     needs: quality
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    permissions:
+      contents: write # publishes reports to the gh-pages branch
     env:
       CI: true
       # Falls back to the offline stub until the password secrets are added
@@ -64,12 +66,24 @@ jobs:
         run: echo "::warning::The TOOLSHOP_ADMIN_PASSWORD secret is not set, so tests ran against the offline stub."
       - name: Run tests
         run: npx playwright test ${{ inputs.grep && format('--grep "{0}"', inputs.grep) || '' }}
+      - name: Restore report history
+        if: ${{ !cancelled() }}
+        run: scripts/ci/restore-history.sh
+      - name: Build dashboard and reports
+        if: ${{ !cancelled() }}
+        run: scripts/ci/build-site.sh
+      - name: Dashboard summary
+        if: ${{ !cancelled() }}
+        run: |
+          node -e "const {summary:s}=require('./site/summary.json');console.log('### Automation dashboard\n\n| Pass rate | Coverage | Critical coverage | Tests |\n| --- | --- | --- | --- |\n| '+s.passRate+'% | '+s.coverage+'% | '+s.criticalCoverage+'% | '+s.total+' |')" >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
           name: test-reports-${{ github.run_id }}
           retention-days: 14
           path: |
-            playwright-report/
+            site/
             test-results/
-            allure-results/
+      - name: Publish to GitHub Pages
+        if: ${{ !cancelled() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
+        run: scripts/ci/publish-pages.sh
