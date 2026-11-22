@@ -36,9 +36,14 @@ _The test in this screenshot was broken on purpose to show the output._
 
 ![A failed test in the HTML report](docs/images/html-report-failure.png)
 
-**Allure report**: the same steps, with labels and history.
+**Allure dashboard**: pass rate, suites, environment and the status trend across runs.
 
-![A test in the Allure report](docs/images/allure-test-steps.png)
+![Allure overview dashboard](docs/images/allure-dashboard.png)
+
+**Allure results table**: every test grouped by project, file and endpoint, with status and duration,
+and the selected test's steps on the right.
+
+![Allure suites table with test steps](docs/images/allure-suites-table.png)
 
 ## Requirements
 
@@ -61,15 +66,15 @@ Then set `ADMIN_PASSWORD` in `.env.local`. This file is git-ignored.
 
 ## Run
 
-| Command                                        | What it runs                                 |
-| ---------------------------------------------- | -------------------------------------------- |
-| `npm test`                                     | All tests against the public API             |
-| `npm run test:stub`                            | All tests against the offline stub, no setup |
-| `npm run test:smoke`                           | Tests tagged `@smoke`                        |
-| `npx playwright test --grep @delete`           | Tests for one method or tag                  |
-| `npm run verify`                               | Typecheck, lint, format check and all tests  |
-| `npm run report`                               | Opens the last HTML report                   |
-| `npm run test:allure && npm run allure:report` | Runs tests and opens the Allure report       |
+| Command                                        | What it runs                                            |
+| ---------------------------------------------- | ------------------------------------------------------- |
+| `npm test`                                     | All tests against the public API                        |
+| `npm run test:stub`                            | All tests against the offline stub, no setup            |
+| `npm run test:smoke`                           | Tests tagged `@smoke`                                   |
+| `npx playwright test --grep @delete`           | Tests for one method or tag                             |
+| `npm run verify`                               | Typecheck, lint, format check and all tests             |
+| `npm run report`                               | Opens the last HTML report                              |
+| `npm run test:allure && npm run allure:report` | Runs tests and opens the Allure report (`allurerc.yml`) |
 
 ## CI
 
