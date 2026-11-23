@@ -1,10 +1,11 @@
 import { z } from 'zod';
 
-/** Toolshop slugs: ASCII letters, digits, dashes and underscores, max 120 chars. */
-export const SlugSchema = z
-  .string()
-  .max(120)
-  .regex(/^[A-Za-z0-9_-]+$/, 'slug must be alpha_dash ASCII');
+/**
+ * Slugs in responses. POST/PATCH only accept alpha_dash ASCII, but that is an input rule, not an
+ * output guarantee: the public seed data already holds `"storage solutions"` (with a space).
+ * The input rule is proven by the 422 tests; builders always generate valid slugs.
+ */
+export const SlugSchema = z.string().min(1).max(120);
 
 /** PUT and PATCH respond with this, not with the updated record. */
 export const UpdateResultSchema = z.object({ success: z.literal(true) });
