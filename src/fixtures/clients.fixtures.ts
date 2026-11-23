@@ -3,6 +3,7 @@ import { AuthClient } from '../clients/auth.client';
 import { BrandsClient } from '../clients/brands.client';
 import { CartsClient } from '../clients/carts.client';
 import { CategoriesClient } from '../clients/categories.client';
+import { InvoicesClient, PaymentClient } from '../clients/invoices.client';
 import { ImagesClient, ProductsClient } from '../clients/products.client';
 import { UsersClient } from '../clients/users.client';
 
@@ -32,6 +33,12 @@ type ClientFixtures = {
   imagesClient: ImagesClient;
   /** Carts are anonymous: whoever holds the id can use it. */
   cartsClient: CartsClient;
+  /** Anonymous: guest checkout only (everything else on /invoices needs a login). */
+  invoicesClient: InvoicesClient;
+  adminInvoicesClient: InvoicesClient;
+  /** Factory: an invoices client that sends this access token (a customer the test logged in itself). */
+  invoicesClientFor: (accessToken: string) => Promise<InvoicesClient>;
+  paymentClient: PaymentClient;
 };
 
 // Lazy: a client (and its login) is only created when a test asks for it.
@@ -83,5 +90,17 @@ export const test = authTest.extend<ClientFixtures>({
   },
   cartsClient: async ({ api }, use) => {
     await use(new CartsClient(api));
+  },
+  invoicesClient: async ({ api }, use) => {
+    await use(new InvoicesClient(api));
+  },
+  adminInvoicesClient: async ({ adminApi }, use) => {
+    await use(new InvoicesClient(adminApi));
+  },
+  invoicesClientFor: async ({ apiAs }, use) => {
+    await use(async (accessToken) => new InvoicesClient(await apiAs(`Bearer ${accessToken}`)));
+  },
+  paymentClient: async ({ api }, use) => {
+    await use(new PaymentClient(api));
   },
 });

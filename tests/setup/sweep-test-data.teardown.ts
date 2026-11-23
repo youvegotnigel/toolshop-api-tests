@@ -4,6 +4,8 @@ import { HTTP } from '../../src/utils/http';
 import { logger } from '../../src/utils/logger';
 
 const GONE: readonly number[] = [HTTP.NO_CONTENT, HTTP.NOT_FOUND];
+// 409: still referenced by an invoice. Invoices cannot be deleted; the hourly database reset removes them.
+const GONE_OR_PINNED: readonly number[] = [...GONE, HTTP.CONFLICT];
 
 // Safety net after every project: delete anything this run created that a fixture missed.
 // Lists everything and filters by prefix: name search is full-text and cannot match the run tag.
@@ -26,7 +28,7 @@ test('remove test data left behind by this run', async ({
         const page = await adminProductsClient.list({ by_category_slug: category.slug, is_rental });
         await expect(page).toBeOK();
         for (const product of (await page.json()).data) {
-          expect(GONE).toContain((await adminProductsClient.remove(product.id)).status());
+          expect(GONE_OR_PINNED).toContain((await adminProductsClient.remove(product.id)).status());
           removed += 1;
         }
       }
@@ -39,7 +41,7 @@ test('remove test data left behind by this run', async ({
       (a, b) => Number(a.parent_id === null) - Number(b.parent_id === null),
     );
     for (const category of leftovers) {
-      expect(GONE).toContain((await adminCategoriesClient.remove(category.id)).status());
+      expect(GONE_OR_PINNED).toContain((await adminCategoriesClient.remove(category.id)).status());
     }
     logger.info(`Sweep removed ${String(leftovers.length)} leftover category(ies)`);
   });
@@ -49,7 +51,7 @@ test('remove test data left behind by this run', async ({
     await expect(res).toBeOK();
     const leftovers = (await res.json()).filter((brand) => brand.name.startsWith(testDataTag()));
     for (const brand of leftovers) {
-      expect(GONE).toContain((await adminBrandsClient.remove(brand.id)).status());
+      expect(GONE_OR_PINNED).toContain((await adminBrandsClient.remove(brand.id)).status());
     }
     logger.info(`Sweep removed ${String(leftovers.length)} leftover brand(s)`);
   });
@@ -59,7 +61,7 @@ test('remove test data left behind by this run', async ({
     await expect(res).toBeOK();
     const leftovers = (await res.json()).data.filter((user) => user.email.startsWith(testDataTag()));
     for (const user of leftovers) {
-      expect(GONE).toContain((await adminUsersClient.remove(user.id)).status());
+      expect(GONE_OR_PINNED).toContain((await adminUsersClient.remove(user.id)).status());
     }
     logger.info(`Sweep removed ${String(leftovers.length)} leftover customer(s)`);
   });

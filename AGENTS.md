@@ -64,6 +64,9 @@ Fixture graph: `adminSession`, `customerSession` (worker; registers its own cust
 5. Assert the exact status first (`HTTP.CREATED`), then parse the body with its zod schema, then check values.
 6. Every record a test creates must be removed: use `createBrand`/`createdBrand`, or register
    `cleanup.add(label, task)` right after creating it. Build data with `buildBrand()` so it carries the run tag.
+   **Only exception:** the API cannot delete invoices or messages. Checkout goes through `placeOrder`, which calls
+   `cleanup.expectRefusal([...ids], reason)` for exactly the records the invoice pins (customer, product, brand,
+   category); they stay, run-tagged, until the hourly reset. Never use `expectRefusal` to silence any other 409.
 7. Reads that verify a write go through the client methods, which send `Cache-Control: no-cache`.
 8. No sleeps: `expect.poll` or `expect(...).toPass()` for eventual consistency.
 9. Tests must pass alone, in parallel and shuffled. Never share state through module variables.
@@ -107,6 +110,9 @@ Fixture graph: `adminSession`, `customerSession` (worker; registers its own cust
 - Carts are anonymous: whoever holds the id can read and change them. `POST /carts/{id}` ADDS to a line's quantity,
   `PUT .../product/quantity` REPLACES it (1 to 99). Cart lines block deleting their product, so create the cart after
   the product (cleanup runs newest first).
+- Invoices: everything needs a login except `POST /invoices/guest`. Customers see, search, PUT and PATCH only their own
+  (404 otherwise). Status updates have no ownership check (known bug #19). PDFs come from a scheduled job, so only the
+  "not generated" answers are tested. Checkout leaves out the postal code: with one, the API calls a postcode service.
 - Categories are read one at a time through `GET /categories/tree/{id}` (there is no `GET /categories/{id}`).
   Deleting a category that still has subcategories returns 409.
 

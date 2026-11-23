@@ -14,4 +14,5 @@ export const HTTP = {
   CONFLICT: 409,
   UNPROCESSABLE: 422,
   SERVER_ERROR: 500,
+  BAD_REQUEST: 400,
 } as const;
