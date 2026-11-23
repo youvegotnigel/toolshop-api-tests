@@ -2,6 +2,10 @@ import { expect } from '@playwright/test';
 import { test as clientsTest } from './clients.fixtures';
 import { buildBrand } from '../data/brand.builder';
 import { buildCategory } from '../data/category.builder';
+import { buildCustomer } from '../data/user.builder';
+import type { UsersClient } from '../clients/users.client';
+import { TokenSchema, type Credentials, type Token } from '../schemas/auth.schema';
+import { RegisteredUserSchema, type RegisteredUser, type UserRegistration } from '../schemas/user.schema';
 import { BrandSchema, type Brand, type BrandInput } from '../schemas/brand.schema';
 import { CategorySchema, type Category, type CategoryInput } from '../schemas/category.schema';
 import { logger } from '../utils/logger';
@@ -19,7 +23,16 @@ type DataFixtures = {
   createCategory: (overrides?: Partial<CategoryInput>) => Promise<Category>;
   /** Ready-made top-level category. */
   createdCategory: Category;
+  /** Factory: registers a customer of the test's own (the admin deletes it afterwards). */
+  createCustomer: (overrides?: Partial<UserRegistration>) => Promise<NewCustomer>;
+  /** Factory: logs in and returns the token plus a users client that sends it. */
+  signIn: (credentials: Credentials) => Promise<SignedIn>;
+  /** A fresh customer, already logged in. Safe to edit, log out or lock: nobody else uses it. */
+  signedInCustomer: NewCustomer & SignedIn;
 };
+
+export type NewCustomer = { user: RegisteredUser; credentials: Credentials };
+export type SignedIn = { token: Token; users: UsersClient };
 
 export const test = clientsTest.extend<DataFixtures>({
   cleanup: [
@@ -63,5 +76,30 @@ export const test = clientsTest.extend<DataFixtures>({
 
   createdCategory: async ({ createCategory }, use) => {
     await use(await createCategory());
+  },
+
+  createCustomer: async ({ usersClient, adminUsersClient, cleanup }, use) => {
+    await use(async (overrides = {}) => {
+      const registration = buildCustomer(overrides);
+      const res = await usersClient.register(registration);
+      await expect(res, 'test data setup: register customer').toBeOK();
+      const user = RegisteredUserSchema.parse(await res.json());
+      cleanup.add(`delete customer ${user.id}`, () => adminUsersClient.remove(user.id));
+      return { user, credentials: { email: registration.email, password: registration.password } };
+    });
+  },
+
+  signIn: async ({ authClient, usersClientFor }, use) => {
+    await use(async (credentials) => {
+      const res = await authClient.login(credentials);
+      await expect(res, 'test data setup: log in').toBeOK();
+      const token = TokenSchema.parse(await res.json());
+      return { token, users: await usersClientFor(token.access_token) };
+    });
+  },
+
+  signedInCustomer: async ({ createCustomer, signIn }, use) => {
+    const customer = await createCustomer();
+    await use({ ...customer, ...(await signIn(customer.credentials)) });
   },
 });

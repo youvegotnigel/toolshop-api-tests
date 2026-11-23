@@ -25,6 +25,8 @@ type TestFixtures = {
   adminApi: APIRequestContext;
   /** Authenticated as a regular customer. */
   customerApi: APIRequestContext;
+  /** Factory: a recorded context for any token, e.g. a customer a test registered itself. */
+  apiAs: (authorization: string) => Promise<APIRequestContext>;
 };
 
 type Playwright = PlaywrightWorkerArgs['playwright'];
@@ -40,13 +42,11 @@ type RecordingOptions = {
   authorization?: string;
 };
 
-/** Builds a context that shares the test's correlation id and call recorder, and disposes it afterwards. */
-const recordedContext = async (
+const newRecordedContext = async (
   playwright: Playwright,
   baseURL: string | undefined,
   options: RecordingOptions,
-  use: (ctx: APIRequestContext) => Promise<void>,
-): Promise<void> => {
+): Promise<{ ctx: APIRequestContext; recorded: APIRequestContext }> => {
   const ctx = await playwright.request.newContext({
     baseURL,
     extraHTTPHeaders: {
@@ -55,7 +55,18 @@ const recordedContext = async (
       ...(options.authorization === undefined ? {} : { Authorization: options.authorization }),
     },
   });
-  await use(options.apiRecorder.wrap(ctx));
+  return { ctx, recorded: options.apiRecorder.wrap(ctx) };
+};
+
+/** Builds a context that shares the test's correlation id and call recorder, and disposes it afterwards. */
+const recordedContext = async (
+  playwright: Playwright,
+  baseURL: string | undefined,
+  options: RecordingOptions,
+  use: (ctx: APIRequestContext) => Promise<void>,
+): Promise<void> => {
+  const { ctx, recorded } = await newRecordedContext(playwright, baseURL, options);
+  await use(recorded);
   await ctx.dispose();
 };
 
@@ -133,5 +144,18 @@ export const test = base.extend<TestFixtures, WorkerFixtures>({
   customerApi: async ({ playwright, baseURL, correlationId, apiRecorder, customerSession }, use) => {
     const authorization = await customerSession.bearer();
     await recordedContext(playwright, baseURL, { correlationId, apiRecorder, authorization }, use);
+  },
+  apiAs: async ({ playwright, baseURL, correlationId, apiRecorder }, use) => {
+    const opened: APIRequestContext[] = [];
+    await use(async (authorization) => {
+      const { ctx, recorded } = await newRecordedContext(playwright, baseURL, {
+        correlationId,
+        apiRecorder,
+        authorization,
+      });
+      opened.push(ctx);
+      return recorded;
+    });
+    for (const ctx of opened) await ctx.dispose();
   },
 });

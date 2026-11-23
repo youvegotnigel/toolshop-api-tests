@@ -86,7 +86,10 @@ Fixture graph: `adminSession`, `customerSession` (worker; registers its own cust
 - Repeated failed logins **lock non-admin accounts** for everyone (HTTP 423); admin accounts never lock. The shared demo
   customer is often locked by other people, so each worker registers its own customer (run-tagged email) and the admin
   deletes it after the run. Never write tests that guess passwords for the shared demo users.
-- `GET /users/search` returns a paginated object (`{ data: [...] }`), not the array the spec documents.
+- `GET /users/search` and `GET /users` return a paginated object (`{ data: [...] }`), not the array the spec documents.
+- Logout and token refresh retire the token they were called with. Use `signedInCustomer` (a customer of the test's
+  own), never the worker's `customerSession`, for logout, refresh, profile edits or lockout tests.
+- Response bodies are redacted in `api-calls.json` like request bodies; never log a token another way.
 - The public database is shared and can be reset by others. Never depend on seeded ids or counts; create your own data.
 - GET responses carry `Cache-Control: public, max-age=120`. Verify writes with the client reads (they send `no-cache`).
 - Name search (`/brands/search`, `/categories/search`, `/products/search`) is MySQL BOOLEAN MODE full-text, and the

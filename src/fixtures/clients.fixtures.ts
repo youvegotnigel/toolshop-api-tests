@@ -1,4 +1,5 @@
 import { test as authTest } from './auth.fixtures';
+import { AuthClient } from '../clients/auth.client';
 import { BrandsClient } from '../clients/brands.client';
 import { CategoriesClient } from '../clients/categories.client';
 import { UsersClient } from '../clients/users.client';
@@ -10,8 +11,15 @@ type ClientFixtures = {
   adminBrandsClient: BrandsClient;
   /** Logged-in customer. */
   customerBrandsClient: BrandsClient;
-  /** Admin user management (search, delete). */
+  /** Anonymous: register and login. */
+  authClient: AuthClient;
+  usersClient: UsersClient;
+  /** Admin user management (list, search, delete). */
   adminUsersClient: UsersClient;
+  /** The worker's throwaway customer: read-only checks only, never log it out or edit it. */
+  customerUsersClient: UsersClient;
+  /** Factory: a users client that sends this access token (a login the test did itself). */
+  usersClientFor: (accessToken: string) => Promise<UsersClient>;
   categoriesClient: CategoriesClient;
   adminCategoriesClient: CategoriesClient;
   customerCategoriesClient: CategoriesClient;
@@ -28,8 +36,20 @@ export const test = authTest.extend<ClientFixtures>({
   customerBrandsClient: async ({ customerApi }, use) => {
     await use(new BrandsClient(customerApi));
   },
+  authClient: async ({ api }, use) => {
+    await use(new AuthClient(api));
+  },
+  usersClient: async ({ api }, use) => {
+    await use(new UsersClient(api));
+  },
   adminUsersClient: async ({ adminApi }, use) => {
     await use(new UsersClient(adminApi));
+  },
+  customerUsersClient: async ({ customerApi }, use) => {
+    await use(new UsersClient(customerApi));
+  },
+  usersClientFor: async ({ apiAs }, use) => {
+    await use(async (accessToken) => new UsersClient(await apiAs(`Bearer ${accessToken}`)));
   },
   categoriesClient: async ({ api }, use) => {
     await use(new CategoriesClient(api));

@@ -2,6 +2,15 @@ import { writeFile } from 'node:fs/promises';
 import type { APIRequestContext, APIResponse, TestInfo } from '@playwright/test';
 import { logger, redact } from './logger';
 
+/** Responses carry secrets too (login and refresh return access_token): redact JSON bodies before storing. */
+const redactBody = (text: string): string => {
+  try {
+    return JSON.stringify(redact(JSON.parse(text)));
+  } catch {
+    return text;
+  }
+};
+
 type Options = { data?: unknown; method?: string };
 type Send = (url: string, options?: Options) => Promise<APIResponse>;
 type Call = {
@@ -68,7 +77,10 @@ export class ApiRecorder {
       const response = await original(url, options);
       const ms = Math.round(performance.now() - started);
       // Read now: bodies are gone once the context is disposed in fixture teardown.
-      const responseBody = (await response.text().catch(() => '<unreadable>')).slice(0, MAX_BODY_CHARS);
+      const responseBody = redactBody(await response.text().catch(() => '<unreadable>')).slice(
+        0,
+        MAX_BODY_CHARS,
+      );
       this.calls.push({ method, url: response.url(), status: response.status(), ms, request, responseBody });
       logger.debug(`${method} ${response.url()} -> ${String(response.status())} in ${String(ms)} ms`);
       return response;
