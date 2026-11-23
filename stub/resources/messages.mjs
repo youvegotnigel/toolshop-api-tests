@@ -55,7 +55,7 @@ export const handleMessages = (ctx) => {
     if (!body.message) return (send(res, 422, { message: ['The message field is required.'] }), true);
     const reply = { id: newId(), message: body.message, user_id: userId };
     if (message) {
-      message.replies.push(reply);
+      message.replies.push({ id: reply.id, message: reply.message }); // the detail view hides who replied
       message.status = 'IN_PROGRESS';
     }
     return (send(res, 201, reply), true);
