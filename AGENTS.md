@@ -113,6 +113,11 @@ Fixture graph: `adminSession`, `customerSession` (worker; registers its own cust
 - Invoices: everything needs a login except `POST /invoices/guest`. Customers see, search, PUT and PATCH only their own
   (404 otherwise). Status updates have no ownership check (known bug #19). PDFs come from a scheduled job, so only the
   "not generated" answers are tested. Checkout leaves out the postal code: with one, the API calls a postcode service.
+- Favorites need a login and only the owner can delete one (someone else's delete answers 204 and does nothing), so
+  test favorites belong to the worker's customer (`createFavorite`), whose context outlives cleanup. Favorites pin
+  their product. Reading one favorite has no ownership check (known bug #21).
+- Messages: sending and attaching are public (only EMPTY `.txt` files are accepted); the rest needs a login and
+  customers see only their own. Reply and status have no ownership check (known bug #22). Messages cannot be deleted.
 - Categories are read one at a time through `GET /categories/tree/{id}` (there is no `GET /categories/{id}`).
   Deleting a category that still has subcategories returns 409.
 
