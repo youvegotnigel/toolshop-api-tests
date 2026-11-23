@@ -21,12 +21,12 @@ description: 'Triage failed Playwright API test runs using failure-summary.json,
 
 ## 3. Classify
 
-| Class       | Typical evidence                                                        | Action                                                     |
-| ----------- | ----------------------------------------------------------------------- | ---------------------------------------------------------- |
-| Product bug | API response contradicts the spec or documented rule, reproducible      | Draft a bug report with the call log; keep the test red    |
-| Test bug    | Wrong expectation, missing cleanup, shared state, wrong fixture or role | Fix the test and prove it with `--repeat-each=3 --shuffle` |
-| Test data   | 404/409 on data the test did not create, database reset by others       | Make the test create its own data via fixtures             |
-| Environment | 5xx, 429, timeouts, `/status` failing, login locked or expired          | Retry later, report the outage; never weaken assertions    |
+| Class       | Typical evidence                                                                                                                                                | Action                                                                                                                                                      |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Product bug | API response contradicts the spec or documented rule, reproducible                                                                                              | File a `bug` + `known-bug` issue with the call log, then mark the test `test.fail` + `knownBug()` (AGENTS.md rule 11); keep asserting the correct behaviour |
+| Test bug    | Wrong expectation, missing cleanup, shared state, wrong fixture or role                                                                                         | Fix the test and prove it with `--repeat-each=3 --shuffle`                                                                                                  |
+| Test data   | 404/409 on data the test did not create, database reset by others                                                                                               | Make the test create its own data via fixtures                                                                                                              |
+| Environment | 5xx, 429, timeouts, `/status` failing, login locked or expired; admin login 401 and vanished data on a run crossing the top of the hour (hourly database reset) | Re-run, report the outage; never weaken assertions                                                                                                          |
 
 ## 4. Report
 

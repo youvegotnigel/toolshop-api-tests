@@ -65,6 +65,7 @@ const kpis = (d: Dashboard): string => {
   return `<div class="kpis">${kpi('Operation coverage', `${String(s.coverage)}%`, `${String(covered)} of ${String(d.operations.length)} operations, target ${String(d.config.targetCoverage)}%`, coverageColor(s.coverage))}
 ${kpi('Critical flows', `${String(s.criticalCoverage)}%`, `${String(critical.filter((o) => o.tests > 0).length)} of ${String(critical.length)} critical operations`, coverageColor(s.criticalCoverage))}
 ${kpi('Pass rate', `${String(s.passRate)}%`, `${String(s.counts.passed)} passed, ${String(s.counts.flaky)} flaky`)}
+${kpi('Known product bugs', String(d.tests.filter((t) => t.knownBug?.reproduces === true).length), 'confirmed defects still reproducing', d.tests.some((t) => t.knownBug?.reproduces === true) ? COLORS.failed : undefined)}
 ${kpi('Last run', duration(s.durationMs), `${String(s.total)} tests on ${escapeHtml(s.env)}`)}</div>`;
 };
 
@@ -120,6 +121,23 @@ const testRows = (tests: TestRecord[]): string =>
     )
     .join('');
 
+const knownBugs = (d: Dashboard): string => {
+  const bugs = d.tests.filter((t) => t.knownBug !== undefined);
+  if (bugs.length === 0) return '';
+  const rows = bugs
+    .map((t) => {
+      const bug = t.knownBug;
+      if (bug === undefined) return '';
+      const state = bug.reproduces
+        ? '<span class="chip red">still reproduces</span>'
+        : '<span class="chip green">looks fixed: remove test.fail()</span>';
+      const issue = bug.issue === undefined ? '' : link(bug.issue, `#${bug.issue.split('/').at(-1) ?? ''}`);
+      return `<tr><td><b>${escapeHtml(bug.summary)}</b><br><span class="muted small">${escapeHtml(t.title)}</span></td><td>${issue}</td><td>${state}</td></tr>`;
+    })
+    .join('');
+  return `<section class="card"><h3>Known product bugs</h3><p class="muted small">Confirmed defects in the API under test, each reproduced by a <code>test.fail()</code> test. They keep the build green while they reproduce and turn it red once fixed.</p><div class="scroll"><table class="ops"><tr><th>Bug</th><th>Issue</th><th>State</th></tr>${rows}</table></div></section>`;
+};
+
 const CLIENT_SCRIPT = `<script>
 for (const el of document.querySelectorAll('[data-time]')) {
   const hours = (Date.now() - Date.parse(el.dataset.time)) / 36e5;
@@ -143,6 +161,7 @@ ${kpis(d)}
 <section class="row two"><div class="card"><h3>Trend per run</h3><div class="key"><span class="k-pass">Pass rate</span><span class="k-cov">Coverage</span><span class="k-crit">Critical coverage</span></div>${trendChart(d.history)}</div>
 <div class="card"><h3>Coverage by method</h3>${methodBars(d.operations, d.config.methods)}<p class="muted small">Operations from the OpenAPI spec with at least one test.</p></div></section>
 <section class="card"><h3>Coverage heatmap</h3><p class="muted small">Covered / total operations per resource and method. Darker is more covered; a bold border means negative or auth scenarios exist too.</p><div class="scroll">${heatmap(d)}</div></section>
+${knownBugs(d)}
 <section class="card"><h3>Critical flows</h3><div class="scroll"><table class="ops"><tr><th>Operation</th><th>Tests</th><th>Depth</th></tr>${critical.map(operationRow).join('')}</table></div></section>
 <section class="card"><h3>All operations</h3>${gaps(d)}</section>
 <section class="card"><h3>Tests in this run</h3><div class="scroll"><table class="ops"><tr><th>Test</th><th>Tags</th><th>Status</th><th>Time</th></tr>${testRows(d.tests)}</table></div></section>

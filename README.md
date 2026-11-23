@@ -15,6 +15,8 @@ Each test checks status codes, the response contract and the business rule, crea
 - **Readable reports**: every test is written as business-language `test.step`s, tagged by resource and method.
 - **Contract checks**: responses are validated with zod schemas.
 - **Safe on a shared API**: each run registers its own customer, tags all its data with a run id and sweeps up anything left behind.
+- **Known product bugs**: confirmed API defects are reproduced by `test.fail()` tests linked to an issue. The build
+  stays green while a bug reproduces, Allure and the dashboard show it as a defect, and the build turns red once it is fixed.
 - **Failure evidence**: one correlation id per test, plus a full API call log (`api-calls.json`) and a trace when a test fails.
 - **Offline mode**: a built-in stub runs the whole suite with no network or credentials.
 - **Strict code quality**: type-aware ESLint with Playwright rules, Prettier, and pre-commit hooks.
@@ -60,6 +62,23 @@ _The test in this screenshot was broken on purpose to show the output._
 and the selected test's steps on the right.
 
 ![Allure suites table with test steps](docs/images/allure-suites-table.png)
+
+## Known product bugs
+
+Bugs found in the Toolshop API are kept visible instead of being skipped or "fixed" in the test.
+Each one has a GitHub issue (label `known-bug`) and a test that asserts the **correct** behaviour, declared with
+`test.fail(...)` and `knownBug(issue, summary)` from `src/utils/known-bug.ts`:
+
+| The bug          | Playwright and CI              | Allure report and dashboard                                                      |
+| ---------------- | ------------------------------ | -------------------------------------------------------------------------------- |
+| still reproduces | expected failure, build green  | **Failed** in "Known product defects", with the issue link and the real response |
+| gets fixed       | unexpected pass, **build red** | "Known bug looks fixed: remove test.fail()"                                      |
+
+Open known bugs: [label `known-bug`](https://github.com/youvegotnigel/toolshop-api-tests/issues?q=label%3Aknown-bug).
+
+![Known product bugs on the dashboard](docs/images/dashboard-known-bugs.png)
+
+![A known product defect in Allure](docs/images/allure-known-defects.png)
 
 ## Requirements
 

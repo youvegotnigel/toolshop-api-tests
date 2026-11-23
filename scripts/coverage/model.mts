@@ -19,6 +19,15 @@ export type TestRecord = {
   tags: string[];
   status: Status;
   durationMs: number;
+  /** Set for `test.fail()` tests tagged @known-bug (see src/utils/known-bug.ts). */
+  knownBug?: KnownBug;
+};
+
+export type KnownBug = {
+  summary: string;
+  issue?: string;
+  /** true: failed as expected, the defect still reproduces. false: passed unexpectedly, looks fixed. */
+  reproduces: boolean;
 };
 
 export type Depth = { happy: boolean; negative: boolean; auth: boolean };

@@ -1,11 +1,12 @@
 /** Turns a Playwright JSON report and the OpenAPI operation list into coverage and run metrics. */
-import type { Config, Depth, OperationCoverage, RunSummary, Status, TestRecord } from './model.mts';
+import type { Config, Depth, KnownBug, OperationCoverage, RunSummary, Status, TestRecord } from './model.mts';
 import { STATUSES } from './model.mts';
 
 type JsonResult = { status: string; duration: number; error?: { message?: string } };
 type JsonTest = {
   projectName: string;
   status: string;
+  expectedStatus?: string;
   results: JsonResult[];
   annotations?: { type: string; description?: string }[];
 };
@@ -36,17 +37,32 @@ const operationsOf = (path: string[], test: JsonTest): string[] => {
   return [...(main === undefined ? [] : [main]), ...extra];
 };
 
+const knownBugOf = (test: JsonTest, tags: string[]): KnownBug | undefined => {
+  if (!tags.includes('@known-bug') || test.expectedStatus !== 'failed') return undefined;
+  const note = (type: string): string | undefined =>
+    test.annotations?.find((a) => a.type === type)?.description;
+  return {
+    summary: note('known-bug') ?? 'Known product defect',
+    issue: note('issue'),
+    // 'expected' = it failed, as declared: the defect is still there
+    reproduces: test.status === 'expected',
+  };
+};
+
 const walk = (suite: JsonSuite, titles: string[], projects: Set<string>, out: TestRecord[]): void => {
   const path = suite.title === '' ? titles : [...titles, suite.title];
   for (const spec of suite.specs ?? []) {
     for (const test of spec.tests.filter((t) => projects.has(t.projectName))) {
+      const tags = (spec.tags ?? []).map((tag) => (tag.startsWith('@') ? tag : `@${tag}`));
+      const knownBug = knownBugOf(test, tags);
       out.push({
         title: [...path.filter((t) => !t.endsWith('.ts')), spec.title].join(' › '),
         operations: operationsOf(path, test),
         // The JSON reporter drops the '@'; keep one spelling everywhere
-        tags: (spec.tags ?? []).map((tag) => (tag.startsWith('@') ? tag : `@${tag}`)),
+        tags,
         status: statusOf(test),
         durationMs: test.results.reduce((sum, r) => sum + r.duration, 0),
+        ...(knownBug === undefined ? {} : { knownBug }),
       });
     }
   }

@@ -13,4 +13,5 @@ export const HTTP = {
   NOT_FOUND: 404,
   CONFLICT: 409,
   UNPROCESSABLE: 422,
+  SERVER_ERROR: 500,
 } as const;

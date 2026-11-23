@@ -4,7 +4,7 @@
 set -euo pipefail
 
 rm -rf site
-if [ -d allure-results ]; then npx allure generate ./allure-results; fi
+if [ -d allure-results ]; then npm run allure:generate --silent; fi
 node scripts/coverage/index.mts --site site
 mkdir -p site/history
 if [ -f allure-history/history.jsonl ]; then cp allure-history/history.jsonl site/history/allure-history.jsonl; fi
