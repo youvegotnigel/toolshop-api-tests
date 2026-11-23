@@ -1,6 +1,6 @@
+import { brands } from '../store.mjs';
 import { CACHE, NOT_FOUND, nameMatches, newId, requireRole, send, validateNamed } from '../lib.mjs';
 
-export const brands = new Map();
 const rules = { store: brands, label: 'brand' };
 
 export const handleBrands = (ctx) => {

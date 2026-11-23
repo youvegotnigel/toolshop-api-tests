@@ -1,6 +1,6 @@
+import { categories, products } from '../store.mjs';
 import { CACHE, NOT_FOUND, nameMatches, newId, requireRole, send, validateNamed } from '../lib.mjs';
 
-export const categories = new Map();
 const rules = { store: categories, label: 'category' };
 
 const withChildren = (category) => ({
@@ -54,7 +54,10 @@ export const handleCategories = (ctx) => {
       return (send(res, 200, { success: true }), true);
     }
     case 'DELETE':
-      if (all.some((c) => c.parent_id === category.id))
+      if (
+        all.some((c) => c.parent_id === category.id) ||
+        [...products.values()].some((p) => p.category_id === category.id)
+      )
         return (
           send(res, 409, { success: false, message: 'Seems like this category is used elsewhere.' }),
           true

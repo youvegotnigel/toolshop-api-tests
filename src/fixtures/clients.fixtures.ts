@@ -2,6 +2,7 @@ import { test as authTest } from './auth.fixtures';
 import { AuthClient } from '../clients/auth.client';
 import { BrandsClient } from '../clients/brands.client';
 import { CategoriesClient } from '../clients/categories.client';
+import { ImagesClient, ProductsClient } from '../clients/products.client';
 import { UsersClient } from '../clients/users.client';
 
 type ClientFixtures = {
@@ -23,6 +24,11 @@ type ClientFixtures = {
   categoriesClient: CategoriesClient;
   adminCategoriesClient: CategoriesClient;
   customerCategoriesClient: CategoriesClient;
+  productsClient: ProductsClient;
+  adminProductsClient: ProductsClient;
+  /** Spec writes need any login; the worker's customer is fine for them. */
+  customerProductsClient: ProductsClient;
+  imagesClient: ImagesClient;
 };
 
 // Lazy: a client (and its login) is only created when a test asks for it.
@@ -59,5 +65,17 @@ export const test = authTest.extend<ClientFixtures>({
   },
   customerCategoriesClient: async ({ customerApi }, use) => {
     await use(new CategoriesClient(customerApi));
+  },
+  productsClient: async ({ api }, use) => {
+    await use(new ProductsClient(api));
+  },
+  adminProductsClient: async ({ adminApi }, use) => {
+    await use(new ProductsClient(adminApi));
+  },
+  customerProductsClient: async ({ customerApi }, use) => {
+    await use(new ProductsClient(customerApi));
+  },
+  imagesClient: async ({ api }, use) => {
+    await use(new ImagesClient(api));
   },
 });
