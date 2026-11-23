@@ -1,4 +1,4 @@
-import { brands, categories, images, products, specs } from '../store.mjs';
+import { brands, carts, categories, images, products, specs } from '../store.mjs';
 import { CACHE, NOT_FOUND, nameMatches, newId, requireRole, send } from '../lib.mjs';
 
 const PAGE_SIZE = 9;
@@ -199,6 +199,11 @@ export const handleProducts = (ctx) => {
       return (send(res, 200, { success: true }), true);
     }
     case 'DELETE':
+      if ([...carts.values()].some((c) => c.items.has(product.id)))
+        return (
+          send(res, 409, { success: false, message: 'Seems like this product is used elsewhere.' }),
+          true
+        );
       products.delete(product.id);
       for (const s of specsOf(product.id)) specs.delete(s.id); // specs cascade with their product
       return (send(res, 204), true);

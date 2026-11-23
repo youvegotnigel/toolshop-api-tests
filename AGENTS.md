@@ -104,6 +104,9 @@ Fixture graph: `adminSession`, `customerSession` (worker; registers its own cust
 - Name search (`/brands/search`, `/categories/search`, `/products/search`) is MySQL BOOLEAN MODE full-text, and the
   server caches each query's result for an hour without clearing it on create. Search for the `searchToken()` word
   every builder puts in the name, never for the run tag (its `-` means "exclude"). The sweep lists and filters by prefix.
+- Carts are anonymous: whoever holds the id can read and change them. `POST /carts/{id}` ADDS to a line's quantity,
+  `PUT .../product/quantity` REPLACES it (1 to 99). Cart lines block deleting their product, so create the cart after
+  the product (cleanup runs newest first).
 - Categories are read one at a time through `GET /categories/tree/{id}` (there is no `GET /categories/{id}`).
   Deleting a category that still has subcategories returns 409.
 

@@ -1,6 +1,7 @@
 import { test as authTest } from './auth.fixtures';
 import { AuthClient } from '../clients/auth.client';
 import { BrandsClient } from '../clients/brands.client';
+import { CartsClient } from '../clients/carts.client';
 import { CategoriesClient } from '../clients/categories.client';
 import { ImagesClient, ProductsClient } from '../clients/products.client';
 import { UsersClient } from '../clients/users.client';
@@ -29,6 +30,8 @@ type ClientFixtures = {
   /** Spec writes need any login; the worker's customer is fine for them. */
   customerProductsClient: ProductsClient;
   imagesClient: ImagesClient;
+  /** Carts are anonymous: whoever holds the id can use it. */
+  cartsClient: CartsClient;
 };
 
 // Lazy: a client (and its login) is only created when a test asks for it.
@@ -77,5 +80,8 @@ export const test = authTest.extend<ClientFixtures>({
   },
   imagesClient: async ({ api }, use) => {
     await use(new ImagesClient(api));
+  },
+  cartsClient: async ({ api }, use) => {
+    await use(new CartsClient(api));
   },
 });
