@@ -12,11 +12,8 @@ export const MessageRecordSchema = z.object({
   email: z.string().nullable().optional(),
 });
 
-export const ReplySchema = z.object({
-  id: z.string().min(1),
-  message: z.string(),
-  user_id: z.string().min(1),
-});
+/** Replies inside GET /messages/{id} do not expose who wrote them (no user_id): verified on the live API. */
+export const ReplySchema = z.object({ id: z.string().min(1), message: z.string() });
 
 /** GET /messages/{id}: the message with its replies. */
 export const MessageDetailSchema = MessageRecordSchema.extend({ replies: z.array(ReplySchema) });
