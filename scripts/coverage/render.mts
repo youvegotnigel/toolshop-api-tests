@@ -112,11 +112,22 @@ const gaps = (d: Dashboard): string => {
     .join('');
 };
 
+/**
+ * Passed: the dot alone (label kept for screen readers and as a tooltip). Anything else keeps a
+ * visible label too, so a failure never depends on telling red from green (WCAG 2.2, 1.4.1).
+ */
+const statusCell = (status: TestRecord['status']): string => {
+  const dot = `<span class="dot" style="background:${COLORS[status]}" title="${status}" aria-hidden="true"></span>`;
+  return status === 'passed'
+    ? `<td class="status">${dot}<span class="sr-only">${status}</span></td>`
+    : `<td class="status">${dot}${status}</td>`;
+};
+
 const testRows = (tests: TestRecord[]): string =>
   tests
     .map(
       (t) =>
-        `<tr><td>${escapeHtml(t.title)}</td><td>${t.tags.map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join('')}</td><td><span class="dot" style="background:${COLORS[t.status]}"></span>${t.status}</td><td class="num">${duration(t.durationMs)}</td></tr>`,
+        `<tr><td>${escapeHtml(t.title)}</td><td>${t.tags.map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join('')}</td>${statusCell(t.status)}<td class="num">${duration(t.durationMs)}</td></tr>`,
     )
     .join('');
 
