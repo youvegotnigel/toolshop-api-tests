@@ -19,6 +19,9 @@ import { RegisteredUserSchema, type RegisteredUser, type UserRegistration } from
 import { BrandSchema, type Brand, type BrandInput } from '../schemas/brand.schema';
 import { CategorySchema, type Category, type CategoryInput } from '../schemas/category.schema';
 import { CartIdSchema } from '../schemas/cart.schema';
+import { FavoriteSchema, type Favorite } from '../schemas/favorite.schema';
+import { MessageRecordSchema, type MessageRecord } from '../schemas/message.schema';
+import { buildMessage } from '../data/message.builder';
 import { buildCheckout } from '../data/invoice.builder';
 import type { InvoicesClient } from '../clients/invoices.client';
 import { InvoiceSchema, type CheckoutInput, type Invoice } from '../schemas/invoice.schema';
@@ -72,6 +75,10 @@ type DataFixtures = {
    * category until the hourly database reset; cleanup logs those as kept instead of warning.
    */
   placeOrder: () => Promise<PlacedOrder>;
+  /** Factory: the worker's customer favorites a product; registered for deletion (favorites pin their product). */
+  createFavorite: (productId: string) => Promise<Favorite>;
+  /** Factory: the worker's customer sends a contact message. Messages cannot be deleted (hourly reset). */
+  sendMessage: () => Promise<MessageRecord>;
   /** Factory: creates an empty cart and registers its deletion (cart items block deleting their product). */
   createCart: () => Promise<string>;
   /** Factory: adds a spec to a product (as the worker's customer) and registers its deletion. */
@@ -265,6 +272,24 @@ export const test = clientsTest.extend<DataFixtures>({
         `referenced by invoice ${invoice.invoice_number}; invoices cannot be deleted, the hourly reset removes them`,
       );
       return { invoice, checkout, customer: { ...customer, ...session, invoices }, bought, quantity };
+    });
+  },
+
+  createFavorite: async ({ customerFavoritesClient, cleanup }, use) => {
+    await use(async (productId) => {
+      const res = await customerFavoritesClient.add(productId);
+      await expect(res, 'test data setup: add favorite').toBeOK();
+      const favorite = FavoriteSchema.parse(await res.json());
+      cleanup.add(`delete favorite ${favorite.id}`, () => customerFavoritesClient.remove(favorite.id));
+      return favorite;
+    });
+  },
+
+  sendMessage: async ({ customerMessagesClient }, use) => {
+    await use(async () => {
+      const res = await customerMessagesClient.send(buildMessage());
+      await expect(res, 'test data setup: send message').toBeOK();
+      return MessageRecordSchema.parse(await res.json());
     });
   },
 });

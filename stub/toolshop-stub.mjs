@@ -8,18 +8,36 @@ import { handleBrands } from './resources/brands.mjs';
 import { handleCarts } from './resources/carts.mjs';
 import { handleCategories } from './resources/categories.mjs';
 import { handleCheckout } from './resources/checkout.mjs';
+import { handleFavorites } from './resources/favorites.mjs';
+import { handleMessages } from './resources/messages.mjs';
 import { handleProducts } from './resources/products.mjs';
 import { handleUsers } from './resources/users.mjs';
 
 const PORT = Number(process.env.STUB_PORT ?? 8091);
-const HANDLERS = [handleUsers, handleBrands, handleCategories, handleProducts, handleCarts, handleCheckout];
+const HANDLERS = [
+  handleUsers,
+  handleBrands,
+  handleCategories,
+  handleProducts,
+  handleCarts,
+  handleCheckout,
+  handleFavorites,
+  handleMessages,
+];
 
 const readBody = async (req) => {
   const chunks = [];
   for await (const chunk of req) chunks.push(chunk);
   const raw = Buffer.concat(chunks).toString();
   if (!raw) return {};
-  if (!(req.headers['content-type'] ?? '').includes('application/json')) throw new Error('Unsupported body');
+  const type = req.headers['content-type'] ?? '';
+  // Multipart (file uploads): keep only what the stub needs, the file name and its size.
+  if (type.startsWith('multipart/form-data')) {
+    const name = /filename="([^"]*)"/.exec(raw)?.[1];
+    const content = raw.split('\r\n\r\n')[1]?.split('\r\n--')[0] ?? '';
+    return { file: name === undefined ? undefined : { name, size: Buffer.byteLength(content) } };
+  }
+  if (!type.includes('application/json')) throw new Error('Unsupported body');
   return JSON.parse(raw);
 };
 
