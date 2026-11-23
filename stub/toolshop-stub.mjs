@@ -5,12 +5,13 @@
 import http from 'node:http';
 import { send } from './lib.mjs';
 import { handleBrands } from './resources/brands.mjs';
+import { handleCarts } from './resources/carts.mjs';
 import { handleCategories } from './resources/categories.mjs';
 import { handleProducts } from './resources/products.mjs';
 import { handleUsers } from './resources/users.mjs';
 
 const PORT = Number(process.env.STUB_PORT ?? 8091);
-const HANDLERS = [handleUsers, handleBrands, handleCategories, handleProducts];
+const HANDLERS = [handleUsers, handleBrands, handleCategories, handleProducts, handleCarts];
 
 const readBody = async (req) => {
   const chunks = [];

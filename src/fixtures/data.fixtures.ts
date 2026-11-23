@@ -18,6 +18,7 @@ import { TokenSchema, type Credentials, type Token } from '../schemas/auth.schem
 import { RegisteredUserSchema, type RegisteredUser, type UserRegistration } from '../schemas/user.schema';
 import { BrandSchema, type Brand, type BrandInput } from '../schemas/brand.schema';
 import { CategorySchema, type Category, type CategoryInput } from '../schemas/category.schema';
+import { CartIdSchema } from '../schemas/cart.schema';
 import { logger } from '../utils/logger';
 import { HTTP } from '../utils/http';
 import type { APIResponse } from '@playwright/test';
@@ -54,6 +55,8 @@ type DataFixtures = {
   }) => Promise<NewProduct>;
   /** Ready-made product. */
   createdProduct: NewProduct;
+  /** Factory: creates an empty cart and registers its deletion (cart items block deleting their product). */
+  createCart: () => Promise<string>;
   /** Factory: adds a spec to a product (as the worker's customer) and registers its deletion. */
   createSpec: (productId: string, overrides?: Partial<ProductSpecInput>) => Promise<ProductSpec>;
 };
@@ -187,6 +190,17 @@ export const test = clientsTest.extend<DataFixtures>({
       // when a test deleted the product itself. 204 either way.
       cleanup.add(`delete spec ${spec.id}`, () => customerProductsClient.removeSpec(productId, spec.id));
       return spec;
+    });
+  },
+
+  createCart: async ({ cartsClient, cleanup }, use) => {
+    await use(async () => {
+      const res = await cartsClient.create();
+      await expect(res, 'test data setup: create cart').toBeOK();
+      const { id } = CartIdSchema.parse(await res.json());
+      // Registered after any product the test made, so the cart (and its items) goes first.
+      cleanup.add(`delete cart ${id}`, () => cartsClient.remove(id));
+      return id;
     });
   },
 });
