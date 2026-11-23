@@ -1,6 +1,6 @@
 import { test, expect } from '../../src/fixtures';
-import { testDataTag } from '../../src/data/brand.builder';
-import { UpdateResultSchema } from '../../src/schemas/brand.schema';
+import { testDataTag } from '../../src/data/test-data';
+import { UpdateResultSchema } from '../../src/schemas/common.schema';
 import { HTTP } from '../../src/utils/http';
 
 test.describe('PATCH /brands/{id}', { tag: ['@brands', '@patch'] }, () => {

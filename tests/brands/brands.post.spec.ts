@@ -1,7 +1,8 @@
 import { test, expect } from '../../src/fixtures';
 import { buildBrand } from '../../src/data/brand.builder';
 import { invalidBrands } from '../../src/data/invalid-brands';
-import { BrandSchema, ValidationErrorsSchema } from '../../src/schemas/brand.schema';
+import { BrandSchema } from '../../src/schemas/brand.schema';
+import { ValidationErrorsSchema } from '../../src/schemas/common.schema';
 import { HTTP } from '../../src/utils/http';
 
 test.describe('POST /brands', { tag: ['@brands', '@post'] }, () => {

@@ -57,7 +57,7 @@ If the endpoint is in `coverage.config.json` `critical`, say so in the PR: it mo
 
 1. `npm run lint && npm run typecheck`
 2. `npx playwright test tests/<resource>` against the public API, or `npm run test:stub` offline.
-   If the stub lacks the endpoint, add the minimum behaviour to `stub/toolshop-stub.mjs` from the spec.
+   If the stub lacks the endpoint, add the minimum behaviour from the spec as a module in `stub/resources/` and register it in `stub/toolshop-stub.mjs`.
 3. `npx playwright test tests/<resource> --repeat-each=3 --shuffle` to prove independence.
 4. Run the `review-api-tests` skill on your diff and fix every blocking finding.
 5. Open a PR using the template; list endpoints and scenarios.

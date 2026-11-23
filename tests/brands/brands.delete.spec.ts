@@ -1,5 +1,5 @@
 import { test, expect } from '../../src/fixtures';
-import { MessageSchema } from '../../src/schemas/brand.schema';
+import { MessageSchema } from '../../src/schemas/common.schema';
 import { HTTP } from '../../src/utils/http';
 
 test.describe('DELETE /brands/{id}', { tag: ['@brands', '@delete', '@auth'] }, () => {
