@@ -10,14 +10,34 @@ const GONE: readonly number[] = [HTTP.NO_CONTENT, HTTP.NOT_FOUND];
 test('remove test data left behind by this run', async ({
   adminBrandsClient,
   adminCategoriesClient,
+  adminProductsClient,
   adminUsersClient,
 }) => {
-  await test.step('Delete categories tagged with this run id, children first', async () => {
+  const taggedCategories = await test.step('Find categories tagged with this run id', async () => {
     const res = await adminCategoriesClient.list();
     await expect(res).toBeOK();
-    const leftovers = (await res.json())
-      .filter((category) => category.name.startsWith(testDataTag()))
-      .sort((a, b) => Number(a.parent_id === null) - Number(b.parent_id === null));
+    return (await res.json()).filter((category) => category.name.startsWith(testDataTag()));
+  });
+
+  await test.step('Delete products left in categories tagged with this run id', async () => {
+    let removed = 0;
+    for (const category of taggedCategories) {
+      for (const is_rental of [false, true]) {
+        const page = await adminProductsClient.list({ by_category_slug: category.slug, is_rental });
+        await expect(page).toBeOK();
+        for (const product of (await page.json()).data) {
+          expect(GONE).toContain((await adminProductsClient.remove(product.id)).status());
+          removed += 1;
+        }
+      }
+    }
+    logger.info(`Sweep removed ${String(removed)} leftover product(s)`);
+  });
+
+  await test.step('Delete categories tagged with this run id, children first', async () => {
+    const leftovers = [...taggedCategories].sort(
+      (a, b) => Number(a.parent_id === null) - Number(b.parent_id === null),
+    );
     for (const category of leftovers) {
       expect(GONE).toContain((await adminCategoriesClient.remove(category.id)).status());
     }
