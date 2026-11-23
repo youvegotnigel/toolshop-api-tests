@@ -4,6 +4,7 @@ export const categories = new Map();
 export const products = new Map();
 export const specs = new Map();
 export const carts = new Map();
+export const invoices = new Map();
 export const images = new Map(
   [
     ['01STUBIMAGE000000000000001', 'Hammer'],

@@ -19,6 +19,9 @@ import { RegisteredUserSchema, type RegisteredUser, type UserRegistration } from
 import { BrandSchema, type Brand, type BrandInput } from '../schemas/brand.schema';
 import { CategorySchema, type Category, type CategoryInput } from '../schemas/category.schema';
 import { CartIdSchema } from '../schemas/cart.schema';
+import { buildCheckout } from '../data/invoice.builder';
+import type { InvoicesClient } from '../clients/invoices.client';
+import { InvoiceSchema, type CheckoutInput, type Invoice } from '../schemas/invoice.schema';
 import { logger } from '../utils/logger';
 import { HTTP } from '../utils/http';
 import type { APIResponse } from '@playwright/test';
@@ -26,7 +29,15 @@ import type { APIResponse } from '@playwright/test';
 const isResponse = (value: unknown): value is APIResponse =>
   typeof value === 'object' && value !== null && 'status' in value && 'ok' in value;
 
-export type Cleanup = { add: (label: string, task: () => Promise<unknown>) => void };
+export type Cleanup = {
+  add: (label: string, task: () => Promise<unknown>) => void;
+  /**
+   * Declares that deleting these records will be refused (409) for a known reason, e.g. an invoice references
+   * them and invoices cannot be deleted. Matching refusals are logged as kept instead of warned about.
+   * Name ids precisely: every other refusal still warns, so real leaks stay visible.
+   */
+  expectRefusal: (ids: string[], reason: string) => void;
+};
 
 type DataFixtures = {
   /** Deferred teardown registry: runs even when the test fails, newest first. */
@@ -55,10 +66,25 @@ type DataFixtures = {
   }) => Promise<NewProduct>;
   /** Ready-made product. */
   createdProduct: NewProduct;
+  /**
+   * Factory: a full purchase. A new customer logs in, puts 2 of a new product in a new cart and checks out
+   * with cash on delivery. Invoices cannot be deleted, so the invoice pins its customer, product, brand and
+   * category until the hourly database reset; cleanup logs those as kept instead of warning.
+   */
+  placeOrder: () => Promise<PlacedOrder>;
   /** Factory: creates an empty cart and registers its deletion (cart items block deleting their product). */
   createCart: () => Promise<string>;
   /** Factory: adds a spec to a product (as the worker's customer) and registers its deletion. */
   createSpec: (productId: string, overrides?: Partial<ProductSpecInput>) => Promise<ProductSpec>;
+};
+
+/** A finished checkout: the invoice, the customer who placed it (logged in) and what they bought. */
+export type PlacedOrder = {
+  invoice: Invoice;
+  checkout: CheckoutInput;
+  customer: NewCustomer & SignedIn & { invoices: InvoicesClient };
+  bought: NewProduct;
+  quantity: number;
 };
 
 /** What a product was built from: tests compare against it and reuse the links. */
@@ -75,14 +101,25 @@ export const test = clientsTest.extend<DataFixtures>({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructuring is how Playwright declares fixture dependencies
     async ({ api, adminApi, customerApi }, use) => {
       const tasks: { label: string; task: () => Promise<unknown> }[] = [];
-      await use({ add: (label, task) => tasks.push({ label, task }) });
+      const kept = new Map<string, string>();
+      await use({
+        add: (label, task) => tasks.push({ label, task }),
+        expectRefusal: (ids, reason) => {
+          for (const id of ids) kept.set(id, reason);
+        },
+      });
       for (const { label, task } of tasks.reverse()) {
         const result = await task().catch((error: unknown) => {
           logger.warn(`cleanup failed: ${label}`, { error: String(error) });
         });
         // An HTTP refusal (e.g. 409 "used elsewhere") does not throw: report it, or data leaks silently.
         if (isResponse(result) && !result.ok() && result.status() !== HTTP.NOT_FOUND) {
-          logger.warn(`cleanup refused: ${label}`, { status: result.status(), body: await result.text() });
+          const reason = [...kept].find(([id]) => label.includes(id))?.[1];
+          if (reason !== undefined && result.status() === HTTP.CONFLICT) {
+            logger.info(`cleanup kept: ${label} (${reason})`);
+          } else {
+            logger.warn(`cleanup refused: ${label}`, { status: result.status(), body: await result.text() });
+          }
         }
       }
     },
@@ -201,6 +238,33 @@ export const test = clientsTest.extend<DataFixtures>({
       // Registered after any product the test made, so the cart (and its items) goes first.
       cleanup.add(`delete cart ${id}`, () => cartsClient.remove(id));
       return id;
+    });
+  },
+
+  placeOrder: async (
+    { createCustomer, signIn, createProduct, createCart, cartsClient, invoicesClientFor, cleanup },
+    use,
+  ) => {
+    await use(async () => {
+      const customer = await createCustomer();
+      const session = await signIn(customer.credentials);
+      const bought = await createProduct();
+      const cartId = await createCart();
+      const quantity = 2;
+      await expect(
+        await cartsClient.addItem(cartId, { product_id: bought.product.id, quantity }),
+        'test data setup: fill cart',
+      ).toBeOK();
+      const invoices = await invoicesClientFor(session.token.access_token);
+      const checkout = buildCheckout(cartId);
+      const res = await invoices.create(checkout);
+      await expect(res, 'test data setup: check out').toBeOK();
+      const invoice = InvoiceSchema.parse(await res.json());
+      cleanup.expectRefusal(
+        [customer.user.id, bought.product.id, bought.brand.id, bought.category.id],
+        `referenced by invoice ${invoice.invoice_number}; invoices cannot be deleted, the hourly reset removes them`,
+      );
+      return { invoice, checkout, customer: { ...customer, ...session, invoices }, bought, quantity };
     });
   },
 });

@@ -1,4 +1,5 @@
 import { randomBytes } from 'node:crypto';
+import { hasInvoices } from './checkout.mjs';
 import { NOT_FOUND, TOKENS, TTL_SECONDS, USERS, newId, requireRole, send, sessionOf } from '../lib.mjs';
 
 const MAX_FAILED_LOGINS = 3;
@@ -149,6 +150,11 @@ export const handleUsers = (ctx) => {
       // Mirrors known bug #15: the real API answers 500 here, not 404.
       if (!user)
         return (send(res, 500, { error: `No query results for model [App\\Models\\User] ${action}` }), true);
+      if (hasInvoices(user.id))
+        return (
+          send(res, 409, { success: false, message: 'Seems like this customer is used elsewhere.' }),
+          true
+        );
       USERS.delete(user.email);
       for (const [token, entry] of TOKENS) if (entry.userId === user.id) TOKENS.delete(token);
       return (send(res, 204), true);

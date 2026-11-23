@@ -1,5 +1,6 @@
 import { brands, carts, categories, images, products, specs } from '../store.mjs';
 import { CACHE, NOT_FOUND, nameMatches, newId, requireRole, send } from '../lib.mjs';
+import { isInvoiced } from './checkout.mjs';
 
 const PAGE_SIZE = 9;
 const page = (rows, n = 1) => ({
@@ -199,7 +200,7 @@ export const handleProducts = (ctx) => {
       return (send(res, 200, { success: true }), true);
     }
     case 'DELETE':
-      if ([...carts.values()].some((c) => c.items.has(product.id)))
+      if ([...carts.values()].some((c) => c.items.has(product.id)) || isInvoiced(product.id))
         return (
           send(res, 409, { success: false, message: 'Seems like this product is used elsewhere.' }),
           true
