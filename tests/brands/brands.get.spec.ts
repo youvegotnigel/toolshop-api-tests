@@ -1,5 +1,6 @@
 import { test, expect } from '../../src/fixtures';
-import { BrandListSchema, BrandSchema, MessageSchema } from '../../src/schemas/brand.schema';
+import { BrandListSchema, BrandSchema } from '../../src/schemas/brand.schema';
+import { MessageSchema } from '../../src/schemas/common.schema';
 import { HTTP } from '../../src/utils/http';
 
 test.describe('GET /brands/{id}', { tag: ['@brands', '@get'] }, () => {

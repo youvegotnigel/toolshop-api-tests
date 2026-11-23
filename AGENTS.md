@@ -43,7 +43,7 @@ scripts/ci/               report history restore, site build, GitHub Pages publi
 coverage.config.json      dashboard settings: target coverage and the critical operations list
 tests/<resource>/         specs, one file per behaviour
 tests/setup/              environment check (setup) and run-tag sweep (teardown)
-stub/toolshop-stub.mjs    offline stand-in for TEST_ENV=stub
+stub/                     offline stand-in for TEST_ENV=stub: router + one module per resource in stub/resources/
 ```
 
 Fixture graph: `adminSession`, `customerSession` (worker; registers its own customer) and `correlationId`, `apiRecorder`
@@ -89,6 +89,11 @@ Fixture graph: `adminSession`, `customerSession` (worker; registers its own cust
 - `GET /users/search` returns a paginated object (`{ data: [...] }`), not the array the spec documents.
 - The public database is shared and can be reset by others. Never depend on seeded ids or counts; create your own data.
 - GET responses carry `Cache-Control: public, max-age=120`. Verify writes with the client reads (they send `no-cache`).
+- Name search (`/brands/search`, `/categories/search`, `/products/search`) is MySQL BOOLEAN MODE full-text, and the
+  server caches each query's result for an hour without clearing it on create. Search for the `searchToken()` word
+  every builder puts in the name, never for the run tag (its `-` means "exclude"). The sweep lists and filters by prefix.
+- Categories are read one at a time through `GET /categories/tree/{id}` (there is no `GET /categories/{id}`).
+  Deleting a category that still has subcategories returns 409.
 
 ## Safety rules for AI agents
 

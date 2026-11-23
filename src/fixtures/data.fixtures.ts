@@ -1,7 +1,9 @@
 import { expect } from '@playwright/test';
 import { test as clientsTest } from './clients.fixtures';
 import { buildBrand } from '../data/brand.builder';
+import { buildCategory } from '../data/category.builder';
 import { BrandSchema, type Brand, type BrandInput } from '../schemas/brand.schema';
+import { CategorySchema, type Category, type CategoryInput } from '../schemas/category.schema';
 import { logger } from '../utils/logger';
 
 export type Cleanup = { add: (label: string, task: () => Promise<unknown>) => void };
@@ -13,6 +15,10 @@ type DataFixtures = {
   createBrand: (overrides?: Partial<BrandInput>) => Promise<Brand>;
   /** Ready-made brand for tests that only need one. */
   createdBrand: Brand;
+  /** Factory: creates a category (top-level unless parent_id is given) and registers its deletion. */
+  createCategory: (overrides?: Partial<CategoryInput>) => Promise<Category>;
+  /** Ready-made top-level category. */
+  createdCategory: Category;
 };
 
 export const test = clientsTest.extend<DataFixtures>({
@@ -42,5 +48,20 @@ export const test = clientsTest.extend<DataFixtures>({
 
   createdBrand: async ({ createBrand }, use) => {
     await use(await createBrand());
+  },
+
+  createCategory: async ({ categoriesClient, adminCategoriesClient, cleanup }, use) => {
+    await use(async (overrides = {}) => {
+      const res = await categoriesClient.create(buildCategory(overrides));
+      await expect(res, 'test data setup: create category').toBeOK();
+      const category = CategorySchema.parse(await res.json());
+      // Cleanup runs newest first, so a subcategory is always removed before its parent.
+      cleanup.add(`delete category ${category.id}`, () => adminCategoriesClient.remove(category.id));
+      return category;
+    });
+  },
+
+  createdCategory: async ({ createCategory }, use) => {
+    await use(await createCategory());
   },
 });

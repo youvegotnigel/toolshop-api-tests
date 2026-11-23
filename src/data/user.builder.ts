@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import { faker } from '@faker-js/faker';
-import { testDataTag } from './brand.builder';
+import { testDataTag } from './test-data';
 import type { UserRegistration } from '../schemas/user.schema';
 
 /**

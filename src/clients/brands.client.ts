@@ -1,7 +1,8 @@
 import type { APIResponse } from '@playwright/test';
 import { BaseClient } from './base.client';
 import { NO_CACHE } from '../utils/http';
-import type { Brand, BrandInput, Message, UpdateResult, ValidationErrors } from '../schemas/brand.schema';
+import type { Brand, BrandInput } from '../schemas/brand.schema';
+import type { Message, UpdateResult, ValidationErrors } from '../schemas/common.schema';
 
 /** Toolshop /brands: GET, POST, PUT and PATCH are public; DELETE needs an admin token. */
 export class BrandsClient extends BaseClient {
