@@ -1,6 +1,6 @@
 import { test, expect } from '../../src/fixtures';
 import { buildProductSpec } from '../../src/data/product.builder';
-import { MessageSchema, ValidationErrorsSchema } from '../../src/schemas/common.schema';
+import { LaravelValidationErrorSchema, MessageSchema } from '../../src/schemas/common.schema';
 import { ProductSpecSchema } from '../../src/schemas/product.schema';
 import { HTTP } from '../../src/utils/http';
 
@@ -36,7 +36,9 @@ test.describe('POST /products/{productId}/specs', { tag: ['@products', '@post'] 
         });
 
         expect(res.status()).toBe(HTTP.UNPROCESSABLE);
-        expect(Object.keys(ValidationErrorsSchema.parse(await res.json()))).toContain('spec_value');
+        expect(Object.keys(LaravelValidationErrorSchema.parse(await res.json()).errors)).toContain(
+          'spec_value',
+        );
       });
     },
   );

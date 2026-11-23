@@ -7,10 +7,12 @@ import { HTTP } from '../../src/utils/http';
 test.describe('PUT /products/{id}', { tag: ['@products', '@put'] }, () => {
   test('replacing a product moves it to another brand with a new name and price', async ({
     productsClient,
-    createdProduct,
+    createProduct,
     createBrand,
   }) => {
+    // The new brand is created first, so cleanup (newest first) deletes the product before it.
     const newBrand = await createBrand();
+    const createdProduct = await createProduct();
     const replacement = buildProduct({ ...createdProduct.input, brand_id: newBrand.id });
 
     await test.step('Replace the whole product', async () => {

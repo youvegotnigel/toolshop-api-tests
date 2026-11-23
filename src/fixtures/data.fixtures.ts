@@ -19,6 +19,11 @@ import { RegisteredUserSchema, type RegisteredUser, type UserRegistration } from
 import { BrandSchema, type Brand, type BrandInput } from '../schemas/brand.schema';
 import { CategorySchema, type Category, type CategoryInput } from '../schemas/category.schema';
 import { logger } from '../utils/logger';
+import { HTTP } from '../utils/http';
+import type { APIResponse } from '@playwright/test';
+
+const isResponse = (value: unknown): value is APIResponse =>
+  typeof value === 'object' && value !== null && 'status' in value && 'ok' in value;
 
 export type Cleanup = { add: (label: string, task: () => Promise<unknown>) => void };
 
@@ -69,9 +74,13 @@ export const test = clientsTest.extend<DataFixtures>({
       const tasks: { label: string; task: () => Promise<unknown> }[] = [];
       await use({ add: (label, task) => tasks.push({ label, task }) });
       for (const { label, task } of tasks.reverse()) {
-        await task().catch((error: unknown) => {
+        const result = await task().catch((error: unknown) => {
           logger.warn(`cleanup failed: ${label}`, { error: String(error) });
         });
+        // An HTTP refusal (e.g. 409 "used elsewhere") does not throw: report it, or data leaks silently.
+        if (isResponse(result) && !result.ok() && result.status() !== HTTP.NOT_FOUND) {
+          logger.warn(`cleanup refused: ${label}`, { status: result.status(), body: await result.text() });
+        }
       }
     },
     { box: true },

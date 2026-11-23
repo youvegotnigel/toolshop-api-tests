@@ -76,6 +76,9 @@ const specErrors = (body, { partial }) => {
   return errors;
 };
 
+// Specs validate inline, so their 422 is Laravel's default shape, not the flat field map.
+const laravel422 = (errors) => ({ message: Object.values(errors)[0][0], errors });
+
 const handleSpecs = (ctx, productId, specId) => {
   const { req, res, body } = ctx;
   if (req.method === 'GET' && specId === undefined) return (send(res, 200, specsOf(productId), CACHE), true);
@@ -89,7 +92,7 @@ const handleSpecs = (ctx, productId, specId) => {
   if (!requireRole(ctx, 'any')) return true;
   if (req.method === 'POST' && specId === undefined) {
     const errors = specErrors(body, { partial: false });
-    if (Object.keys(errors).length > 0) return (send(res, 422, errors), true);
+    if (Object.keys(errors).length > 0) return (send(res, 422, laravel422(errors)), true);
     const spec = {
       id: newId(),
       product_id: productId,
@@ -104,7 +107,7 @@ const handleSpecs = (ctx, productId, specId) => {
   const mine = spec && spec.product_id === productId;
   if (req.method === 'PUT') {
     const errors = specErrors(body, { partial: true });
-    if (Object.keys(errors).length > 0) return (send(res, 422, errors), true);
+    if (Object.keys(errors).length > 0) return (send(res, 422, laravel422(errors)), true);
     if (!mine) return (send(res, 404, NOT_FOUND), true);
     for (const f of ['spec_name', 'spec_value', 'spec_unit']) if (f in body) spec[f] = body[f];
     return (send(res, 200, { success: true }), true);

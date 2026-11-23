@@ -15,6 +15,15 @@ export const MessageSchema = z.object({ message: z.string() });
 /** 409 and 422 bodies: field name -> list of messages (Laravel MessageBag). */
 export const ValidationErrorsSchema = z.record(z.string(), z.array(z.string()).min(1));
 
+/**
+ * Laravel's default 422 shape. Endpoints that validate inline (product specs) answer with this,
+ * not the flat field map above: the API has two validation error formats.
+ */
+export const LaravelValidationErrorSchema = z.object({
+  message: z.string(),
+  errors: ValidationErrorsSchema,
+});
+
 export type UpdateResult = z.infer<typeof UpdateResultSchema>;
 export type Message = z.infer<typeof MessageSchema>;
 export type ValidationErrors = z.infer<typeof ValidationErrorsSchema>;

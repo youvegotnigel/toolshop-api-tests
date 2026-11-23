@@ -1,4 +1,4 @@
-import { brands } from '../store.mjs';
+import { brands, products } from '../store.mjs';
 import { CACHE, NOT_FOUND, nameMatches, newId, requireRole, send, validateNamed } from '../lib.mjs';
 
 const rules = { store: brands, label: 'brand' };
@@ -49,6 +49,11 @@ export const handleBrands = (ctx) => {
       return (send(res, 200, { success: true }), true);
     }
     case 'DELETE':
+      if ([...products.values()].some((p) => p.brand_id === brand.id))
+        return (
+          send(res, 409, { success: false, message: 'Seems like this brand is used elsewhere.' }),
+          true
+        );
       brands.delete(brand.id);
       return (send(res, 204), true);
     default:
