@@ -146,7 +146,9 @@ export const handleUsers = (ctx) => {
       return (send(res, 200, { success: true }), true);
     }
     case 'DELETE':
-      if (!user) return (send(res, 404, NOT_FOUND), true);
+      // Mirrors known bug #15: the real API answers 500 here, not 404.
+      if (!user)
+        return (send(res, 500, { error: `No query results for model [App\\Models\\User] ${action}` }), true);
       USERS.delete(user.email);
       for (const [token, entry] of TOKENS) if (entry.userId === user.id) TOKENS.delete(token);
       return (send(res, 204), true);

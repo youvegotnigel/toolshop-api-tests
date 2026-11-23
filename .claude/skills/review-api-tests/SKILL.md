@@ -27,6 +27,7 @@ Blocking (must fix before merge):
 - [ ] No secrets, tokens or personal data in code, logs, test names or attachments
 - [ ] Clients have explicit return types and no assertions; schemas have no `any` or loosened types to dodge failures
 - [ ] Expectations changed in this PR are justified by the spec or captured API behaviour, not by "it was red"
+- [ ] A product bug is handled as a known bug (AGENTS.md rule 11): issue linked, `test.fail`, correct behaviour asserted
 
 Non-blocking (improve when cheap):
 

@@ -121,7 +121,13 @@ export const test = clientsTest.extend<DataFixtures>({
       const res = await usersClient.register(registration);
       await expect(res, 'test data setup: register customer').toBeOK();
       const user = RegisteredUserSchema.parse(await res.json());
-      cleanup.add(`delete customer ${user.id}`, () => adminUsersClient.remove(user.id));
+      cleanup.add(`delete customer ${user.id}`, async () => {
+        const res = await adminUsersClient.remove(user.id);
+        // Known bug #15: an already deleted user answers 500 "No query results", not 404. It is gone either way.
+        return res.status() === HTTP.SERVER_ERROR && (await res.text()).includes('No query results')
+          ? null
+          : res;
+      });
       return { user, credentials: { email: registration.email, password: registration.password } };
     });
   },

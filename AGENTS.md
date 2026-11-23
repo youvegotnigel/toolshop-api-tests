@@ -68,6 +68,10 @@ Fixture graph: `adminSession`, `customerSession` (worker; registers its own cust
 8. No sleeps: `expect.poll` or `expect(...).toPass()` for eventual consistency.
 9. Tests must pass alone, in parallel and shuffled. Never share state through module variables.
 10. Negative tests use `createRaw` style client methods. Never weaken a schema to make a test pass.
+11. A confirmed **product bug** gets a GitHub issue (labels `bug`, `known-bug`) and a test declared with
+    `test.fail('title', knownBug(issue, summary, ['@negative']), body)` that asserts the CORRECT behaviour.
+    Never assert the buggy response, never `test.skip` it. When the test passes unexpectedly, the bug is fixed:
+    remove `test.fail`, close the issue. The stub reproduces known bugs too, so offline runs agree with the live API.
 
 ## Rules for framework code
 

@@ -10,3 +10,14 @@ plugins:
   allure2:
     options:
       reportName: Toolshop API tests
+# Known bugs: see scripts/ci/allure-known-bugs.mts and AGENTS.md "Known product bugs"
+categories:
+  rules:
+    - name: 'Known bug looks fixed: remove test.fail()'
+      matchers:
+        labels: { tag: known-bug }
+        message: 'Expected to fail, but passed'
+    - name: Known product defects
+      matchers:
+        labels: { tag: known-bug }
+        statuses: [failed]
