@@ -1,0 +1,1 @@
+{"id":"0462dac389aa9d3dcdbb983ab2108abb.259864bbb84e0941359ea9e4c0db04ac","fullName":"users/users.login.spec.ts › POST /users/login › a customer logs in and gets a bearer token that opens their account","name":"a customer logs in and gets a bearer token that opens their account","status":"passed","testResultsByEnv":{"default":"cf979519743c7ca97cec64f33b9e017e"}}

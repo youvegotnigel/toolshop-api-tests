@@ -1,0 +1,1 @@
+{"id":"95924793533c9bf39634c7cb408960de.259864bbb84e0941359ea9e4c0db04ac","fullName":"brands/brands.delete.spec.ts › DELETE /brands/{id} › a shopper who is not logged in cannot delete a brand","name":"a shopper who is not logged in cannot delete a brand","status":"passed","testResultsByEnv":{"default":"a808d168da4f63890319c78537e2a89a"}}

@@ -1,0 +1,272 @@
+[
+  {
+    "runNumber": "12",
+    "commit": "2b836d4e4bd183394f4b6ff95031f007c523294f",
+    "env": "public",
+    "date": "2026-11-22T09:23:38.799Z",
+    "durationMs": 11845,
+    "total": 5,
+    "counts": {
+      "passed": 5,
+      "failed": 0,
+      "broken": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "passRate": 100,
+    "coverage": 7.4,
+    "criticalCoverage": 0
+  },
+  {
+    "runNumber": "13",
+    "commit": "2b836d4e4bd183394f4b6ff95031f007c523294f",
+    "env": "public",
+    "date": "2026-11-22T09:24:54.305Z",
+    "durationMs": 10218,
+    "total": 5,
+    "counts": {
+      "passed": 5,
+      "failed": 0,
+      "broken": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "passRate": 100,
+    "coverage": 7.4,
+    "criticalCoverage": 0
+  },
+  {
+    "runNumber": "17",
+    "commit": "2478373a739662a1d6f17bcc57a28ed5f2d8a65a",
+    "env": "public",
+    "date": "2026-11-22T09:57:24.710Z",
+    "durationMs": 12929,
+    "total": 12,
+    "counts": {
+      "passed": 12,
+      "failed": 0,
+      "broken": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "passRate": 100,
+    "coverage": 7.4,
+    "criticalCoverage": 0
+  },
+  {
+    "runNumber": "23",
+    "commit": "ea9073195b9656d0a94a776cb3041300350732fe",
+    "env": "public",
+    "date": "2026-11-23T03:55:47.968Z",
+    "durationMs": 23682,
+    "total": 32,
+    "counts": {
+      "passed": 32,
+      "failed": 0,
+      "broken": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "passRate": 100,
+    "coverage": 18.5,
+    "criticalCoverage": 0
+  },
+  {
+    "runNumber": "26",
+    "commit": "01c93939adc83cbcea807981ccc5f5ba438db674",
+    "env": "public",
+    "date": "2026-11-23T04:19:24.076Z",
+    "durationMs": 91265,
+    "total": 83,
+    "counts": {
+      "passed": 83,
+      "failed": 0,
+      "broken": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "passRate": 100,
+    "coverage": 50.6,
+    "criticalCoverage": 46.2
+  },
+  {
+    "runNumber": "28",
+    "commit": "84f879a3b1c9627c93fd4ea028118f4837335151",
+    "env": "public",
+    "date": "2026-11-23T04:25:07.688Z",
+    "durationMs": 113653,
+    "total": 84,
+    "counts": {
+      "passed": 84,
+      "failed": 0,
+      "broken": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "passRate": 100,
+    "coverage": 50.6,
+    "criticalCoverage": 46.2
+  },
+  {
+    "runNumber": "30",
+    "commit": "b80996e09341e513d59747fd11b1316371695910",
+    "env": "public",
+    "date": "2026-11-23T04:38:11.565Z",
+    "durationMs": 92594,
+    "total": 84,
+    "counts": {
+      "passed": 84,
+      "failed": 0,
+      "broken": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "passRate": 100,
+    "coverage": 50.6,
+    "criticalCoverage": 46.2
+  },
+  {
+    "runNumber": "40",
+    "commit": "22b81a0d9c1e084f068db67787aa73cab358fd23",
+    "env": "public",
+    "date": "2026-11-23T05:16:06.936Z",
+    "durationMs": 204533,
+    "total": 143,
+    "counts": {
+      "passed": 143,
+      "failed": 0,
+      "broken": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "passRate": 100,
+    "coverage": 84,
+    "criticalCoverage": 100
+  },
+  {
+    "runNumber": "42",
+    "commit": "12b7787b23b8daf255dc676ab68c3a6bfce5f831",
+    "env": "public",
+    "date": "2026-11-23T05:28:42.002Z",
+    "durationMs": 231922,
+    "total": 143,
+    "counts": {
+      "passed": 143,
+      "failed": 0,
+      "broken": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "passRate": 100,
+    "coverage": 84,
+    "criticalCoverage": 100
+  },
+  {
+    "runNumber": "43",
+    "commit": "12b7787b23b8daf255dc676ab68c3a6bfce5f831",
+    "env": "public",
+    "date": "2026-11-23T09:03:46.118Z",
+    "durationMs": 179590,
+    "total": 143,
+    "counts": {
+      "passed": 143,
+      "failed": 0,
+      "broken": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "passRate": 100,
+    "coverage": 84,
+    "criticalCoverage": 100
+  },
+  {
+    "runNumber": "44",
+    "commit": "12b7787b23b8daf255dc676ab68c3a6bfce5f831",
+    "env": "public",
+    "date": "2026-11-24T10:56:06.242Z",
+    "durationMs": 171888,
+    "total": 143,
+    "counts": {
+      "passed": 143,
+      "failed": 0,
+      "broken": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "passRate": 100,
+    "coverage": 84,
+    "criticalCoverage": 100
+  },
+  {
+    "runNumber": "45",
+    "commit": "12b7787b23b8daf255dc676ab68c3a6bfce5f831",
+    "env": "public",
+    "date": "2026-11-25T09:52:14.177Z",
+    "durationMs": 269953,
+    "total": 143,
+    "counts": {
+      "passed": 143,
+      "failed": 0,
+      "broken": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "passRate": 100,
+    "coverage": 84,
+    "criticalCoverage": 100
+  },
+  {
+    "runNumber": "46",
+    "commit": "12b7787b23b8daf255dc676ab68c3a6bfce5f831",
+    "env": "public",
+    "date": "2026-11-26T09:31:57.323Z",
+    "durationMs": 5332,
+    "total": 143,
+    "counts": {
+      "passed": 0,
+      "failed": 0,
+      "broken": 0,
+      "flaky": 0,
+      "skipped": 143
+    },
+    "passRate": 0,
+    "coverage": 84,
+    "criticalCoverage": 100
+  },
+  {
+    "runNumber": "47",
+    "commit": "12b7787b23b8daf255dc676ab68c3a6bfce5f831",
+    "env": "public",
+    "date": "2026-11-27T09:40:33.423Z",
+    "durationMs": 242460,
+    "total": 143,
+    "counts": {
+      "passed": 143,
+      "failed": 0,
+      "broken": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "passRate": 100,
+    "coverage": 84,
+    "criticalCoverage": 100
+  },
+  {
+    "runNumber": "48",
+    "commit": "12b7787b23b8daf255dc676ab68c3a6bfce5f831",
+    "env": "public",
+    "date": "2026-11-28T08:55:05.431Z",
+    "durationMs": 206539,
+    "total": 143,
+    "counts": {
+      "passed": 143,
+      "failed": 0,
+      "broken": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "passRate": 100,
+    "coverage": 84,
+    "criticalCoverage": 100
+  }
+]

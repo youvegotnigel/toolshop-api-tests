@@ -1,0 +1,1 @@
+{"id":"b655bcab4a0501c3703c2836f550eb15.259864bbb84e0941359ea9e4c0db04ac","fullName":"carts/carts.add-item.spec.ts › POST /carts/{id} › adding is rejected when the quantity is zero","name":"adding is rejected when the quantity is zero","status":"passed","testResultsByEnv":{"default":"dcfa06d242f244eb9d9e38c30d2116a8"}}

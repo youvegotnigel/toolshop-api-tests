@@ -1,0 +1,1 @@
+{"id":"4d9e0f5a490cf26a05c25489f731d65c.259864bbb84e0941359ea9e4c0db04ac","fullName":"brands/brands.get.spec.ts › GET /brands/{id} › opening a brand that does not exist returns not found","name":"opening a brand that does not exist returns not found","status":"passed","testResultsByEnv":{"default":"12d508eba6f38ec782627ad7cabff55f"}}

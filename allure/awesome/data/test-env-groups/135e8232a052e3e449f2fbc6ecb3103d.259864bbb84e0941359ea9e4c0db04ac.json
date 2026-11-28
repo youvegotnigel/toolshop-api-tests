@@ -1,0 +1,1 @@
+{"id":"135e8232a052e3e449f2fbc6ecb3103d.259864bbb84e0941359ea9e4c0db04ac","fullName":"messages/messages.status.spec.ts › PUT /messages/{id}/status › an admin resolves a message and the customer sees it resolved","name":"an admin resolves a message and the customer sees it resolved","status":"passed","testResultsByEnv":{"default":"35111d0f10d3f48ed67640dbc0ad5ae1"}}

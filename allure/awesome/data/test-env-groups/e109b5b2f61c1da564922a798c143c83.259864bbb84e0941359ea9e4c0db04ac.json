@@ -1,0 +1,1 @@
+{"id":"e109b5b2f61c1da564922a798c143c83.259864bbb84e0941359ea9e4c0db04ac","fullName":"checkout/invoices.get.spec.ts › GET /invoices/{id} › a customer cannot open another customer’s invoice","name":"a customer cannot open another customer’s invoice","status":"passed","testResultsByEnv":{"default":"7acdef47b041bd9c8a469516346426ac"}}

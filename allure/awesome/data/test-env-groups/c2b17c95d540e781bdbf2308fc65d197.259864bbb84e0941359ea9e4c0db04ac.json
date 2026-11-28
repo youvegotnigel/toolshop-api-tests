@@ -1,0 +1,1 @@
+{"id":"c2b17c95d540e781bdbf2308fc65d197.259864bbb84e0941359ea9e4c0db04ac","fullName":"categories/categories.post.spec.ts › POST /categories › a category is rejected when the slug contains spaces","name":"a category is rejected when the slug contains spaces","status":"passed","testResultsByEnv":{"default":"d22c4d89457976cf59556bb66f016fc8"}}

@@ -1,0 +1,1 @@
+{"id":"48f0b8f2c43582cbc09867905d017250.259864bbb84e0941359ea9e4c0db04ac","fullName":"categories/categories.delete.spec.ts › DELETE /categories/{id} › a category that still has subcategories cannot be deleted","name":"a category that still has subcategories cannot be deleted","status":"passed","testResultsByEnv":{"default":"d42678111ae2593712da3d18f1f8395f"}}

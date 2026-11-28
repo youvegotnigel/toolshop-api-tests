@@ -1,0 +1,1 @@
+{"id":"5e19487b6cb8a7532a419bf9c1977c4f.259864bbb84e0941359ea9e4c0db04ac","fullName":"checkout/invoices.post.spec.ts › POST /invoices › a shopper who is not logged in must use guest checkout","name":"a shopper who is not logged in must use guest checkout","status":"passed","testResultsByEnv":{"default":"c8788a2ad81572e7250576aea0db1d5e"}}

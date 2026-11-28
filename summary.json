@@ -1,0 +1,1075 @@
+{
+  "summary": {
+    "runNumber": "48",
+    "commit": "12b7787b23b8daf255dc676ab68c3a6bfce5f831",
+    "env": "public",
+    "date": "2026-11-28T08:55:05.431Z",
+    "durationMs": 206539,
+    "total": 143,
+    "counts": {
+      "passed": 143,
+      "failed": 0,
+      "broken": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "passRate": 100,
+    "coverage": 84,
+    "criticalCoverage": 100
+  },
+  "operations": [
+    {
+      "operation": "DELETE /brands/{brandId}",
+      "method": "DELETE",
+      "resource": "brands",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "DELETE /carts/{cartId}",
+      "method": "DELETE",
+      "resource": "carts",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "DELETE /carts/{cartId}/product/{productId}",
+      "method": "DELETE",
+      "resource": "carts",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "DELETE /categories/{categoryId}",
+      "method": "DELETE",
+      "resource": "categories",
+      "critical": false,
+      "tests": 3,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "DELETE /favorites/{favoriteId}",
+      "method": "DELETE",
+      "resource": "favorites",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "DELETE /products/{productId}",
+      "method": "DELETE",
+      "resource": "products",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "DELETE /products/{productId}/specs/{specId}",
+      "method": "DELETE",
+      "resource": "products",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "DELETE /users/{userId}",
+      "method": "DELETE",
+      "resource": "users",
+      "critical": false,
+      "tests": 3,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /brands",
+      "method": "GET",
+      "resource": "brands",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /brands/search",
+      "method": "GET",
+      "resource": "brands",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /brands/{brandId}",
+      "method": "GET",
+      "resource": "brands",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /carts/{cartId}",
+      "method": "GET",
+      "resource": "carts",
+      "critical": true,
+      "tests": 3,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /categories",
+      "method": "GET",
+      "resource": "categories",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /categories/search",
+      "method": "GET",
+      "resource": "categories",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /categories/tree",
+      "method": "GET",
+      "resource": "categories",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /categories/tree/{categoryId}",
+      "method": "GET",
+      "resource": "categories",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /favorites",
+      "method": "GET",
+      "resource": "favorites",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /favorites/{favoriteId}",
+      "method": "GET",
+      "resource": "favorites",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /images",
+      "method": "GET",
+      "resource": "images",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /invoices",
+      "method": "GET",
+      "resource": "invoices",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /invoices/search",
+      "method": "GET",
+      "resource": "invoices",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /invoices/{invoiceId}",
+      "method": "GET",
+      "resource": "invoices",
+      "critical": true,
+      "tests": 3,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /invoices/{invoice_number}/download-pdf",
+      "method": "GET",
+      "resource": "invoices",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": false,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /invoices/{invoice_number}/download-pdf-status",
+      "method": "GET",
+      "resource": "invoices",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": false,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /messages",
+      "method": "GET",
+      "resource": "messages",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /messages/{messageId}",
+      "method": "GET",
+      "resource": "messages",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /postcode-lookup",
+      "method": "GET",
+      "resource": "postcode-lookup",
+      "critical": false,
+      "tests": 0,
+      "depth": {
+        "happy": false,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /product-specs/names",
+      "method": "GET",
+      "resource": "product-specs",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /products",
+      "method": "GET",
+      "resource": "products",
+      "critical": true,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /products/search",
+      "method": "GET",
+      "resource": "products",
+      "critical": true,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /products/{productId}",
+      "method": "GET",
+      "resource": "products",
+      "critical": true,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /products/{productId}/related",
+      "method": "GET",
+      "resource": "products",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /products/{productId}/specs",
+      "method": "GET",
+      "resource": "products",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /products/{productId}/specs/{specId}",
+      "method": "GET",
+      "resource": "products",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /reports/average-sales-per-month",
+      "method": "GET",
+      "resource": "reports",
+      "critical": false,
+      "tests": 0,
+      "depth": {
+        "happy": false,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /reports/average-sales-per-week",
+      "method": "GET",
+      "resource": "reports",
+      "critical": false,
+      "tests": 0,
+      "depth": {
+        "happy": false,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /reports/customers-by-country",
+      "method": "GET",
+      "resource": "reports",
+      "critical": false,
+      "tests": 0,
+      "depth": {
+        "happy": false,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /reports/top10-best-selling-categories",
+      "method": "GET",
+      "resource": "reports",
+      "critical": false,
+      "tests": 0,
+      "depth": {
+        "happy": false,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /reports/top10-purchased-products",
+      "method": "GET",
+      "resource": "reports",
+      "critical": false,
+      "tests": 0,
+      "depth": {
+        "happy": false,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /reports/total-sales-of-years",
+      "method": "GET",
+      "resource": "reports",
+      "critical": false,
+      "tests": 0,
+      "depth": {
+        "happy": false,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /reports/total-sales-per-country",
+      "method": "GET",
+      "resource": "reports",
+      "critical": false,
+      "tests": 0,
+      "depth": {
+        "happy": false,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /sales-stream",
+      "method": "GET",
+      "resource": "sales-stream",
+      "critical": false,
+      "tests": 0,
+      "depth": {
+        "happy": false,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /users",
+      "method": "GET",
+      "resource": "users",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /users/logout",
+      "method": "GET",
+      "resource": "users",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /users/me",
+      "method": "GET",
+      "resource": "users",
+      "critical": true,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /users/refresh",
+      "method": "GET",
+      "resource": "users",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /users/search",
+      "method": "GET",
+      "resource": "users",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "GET /users/{userId}",
+      "method": "GET",
+      "resource": "users",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "PATCH /brands/{brandId}",
+      "method": "PATCH",
+      "resource": "brands",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "PATCH /categories/{categoryId}",
+      "method": "PATCH",
+      "resource": "categories",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "PATCH /invoices/{invoiceId}",
+      "method": "PATCH",
+      "resource": "invoices",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "PATCH /products/{productId}",
+      "method": "PATCH",
+      "resource": "products",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "PATCH /users/{userId}",
+      "method": "PATCH",
+      "resource": "users",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "POST /brands",
+      "method": "POST",
+      "resource": "brands",
+      "critical": false,
+      "tests": 6,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "POST /carts",
+      "method": "POST",
+      "resource": "carts",
+      "critical": true,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "POST /carts/{id}",
+      "method": "POST",
+      "resource": "carts",
+      "critical": true,
+      "tests": 6,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "POST /categories",
+      "method": "POST",
+      "resource": "categories",
+      "critical": false,
+      "tests": 6,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "POST /favorites",
+      "method": "POST",
+      "resource": "favorites",
+      "critical": false,
+      "tests": 3,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "POST /invoices",
+      "method": "POST",
+      "resource": "invoices",
+      "critical": true,
+      "tests": 3,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "POST /invoices/guest",
+      "method": "POST",
+      "resource": "invoices",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "POST /messages",
+      "method": "POST",
+      "resource": "messages",
+      "critical": false,
+      "tests": 3,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "POST /messages/{messageId}/attach-file",
+      "method": "POST",
+      "resource": "messages",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "POST /messages/{messageId}/reply",
+      "method": "POST",
+      "resource": "messages",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "POST /payment/check",
+      "method": "POST",
+      "resource": "payment",
+      "critical": true,
+      "tests": 7,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "POST /products",
+      "method": "POST",
+      "resource": "products",
+      "critical": false,
+      "tests": 4,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "POST /products/{productId}/specs",
+      "method": "POST",
+      "resource": "products",
+      "critical": false,
+      "tests": 3,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "POST /totp/setup",
+      "method": "POST",
+      "resource": "totp",
+      "critical": false,
+      "tests": 0,
+      "depth": {
+        "happy": false,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "POST /totp/verify",
+      "method": "POST",
+      "resource": "totp",
+      "critical": false,
+      "tests": 0,
+      "depth": {
+        "happy": false,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "POST /users/change-password",
+      "method": "POST",
+      "resource": "users",
+      "critical": false,
+      "tests": 0,
+      "depth": {
+        "happy": false,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "POST /users/forgot-password",
+      "method": "POST",
+      "resource": "users",
+      "critical": false,
+      "tests": 0,
+      "depth": {
+        "happy": false,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "POST /users/login",
+      "method": "POST",
+      "resource": "users",
+      "critical": true,
+      "tests": 4,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "POST /users/register",
+      "method": "POST",
+      "resource": "users",
+      "critical": true,
+      "tests": 6,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "PUT /brands/{brandId}",
+      "method": "PUT",
+      "resource": "brands",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "PUT /carts/{cartId}/product/quantity",
+      "method": "PUT",
+      "resource": "carts",
+      "critical": true,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "PUT /categories/{categoryId}",
+      "method": "PUT",
+      "resource": "categories",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "PUT /invoices/{invoiceId}",
+      "method": "PUT",
+      "resource": "invoices",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "PUT /invoices/{invoiceId}/status",
+      "method": "PUT",
+      "resource": "invoices",
+      "critical": false,
+      "tests": 3,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "PUT /messages/{messageId}/status",
+      "method": "PUT",
+      "resource": "messages",
+      "critical": false,
+      "tests": 3,
+      "depth": {
+        "happy": true,
+        "negative": true,
+        "auth": true
+      },
+      "failing": false
+    },
+    {
+      "operation": "PUT /products/{productId}",
+      "method": "PUT",
+      "resource": "products",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "PUT /products/{productId}/specs/{specId}",
+      "method": "PUT",
+      "resource": "products",
+      "critical": false,
+      "tests": 1,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": false
+      },
+      "failing": false
+    },
+    {
+      "operation": "PUT /users/{userId}",
+      "method": "PUT",
+      "resource": "users",
+      "critical": false,
+      "tests": 2,
+      "depth": {
+        "happy": true,
+        "negative": false,
+        "auth": true
+      },
+      "failing": false
+    }
+  ]
+}

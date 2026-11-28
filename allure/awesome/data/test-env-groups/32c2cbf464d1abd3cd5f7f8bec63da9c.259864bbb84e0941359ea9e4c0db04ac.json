@@ -1,0 +1,1 @@
+{"id":"32c2cbf464d1abd3cd5f7f8bec63da9c.259864bbb84e0941359ea9e4c0db04ac","fullName":"carts/carts.get.spec.ts › GET /carts/{id} › opening a cart that does not exist returns not found","name":"opening a cart that does not exist returns not found","status":"passed","testResultsByEnv":{"default":"0b2b11e59afe1f5e7f8bc0399e9db00a"}}

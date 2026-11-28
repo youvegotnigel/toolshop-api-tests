@@ -1,0 +1,1 @@
+{"id":"15f136d921fc09264a6738fa0a9a8b8d.259864bbb84e0941359ea9e4c0db04ac","fullName":"users/users.register.spec.ts › POST /users/register › registration is rejected when the email is missing","name":"registration is rejected when the email is missing","status":"passed","testResultsByEnv":{"default":"facfcf4d17e86aca28ee4736cdff8444"}}

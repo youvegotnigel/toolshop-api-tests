@@ -1,0 +1,1 @@
+{"id":"f231fb42ba54d594734456f7fbcbb981.259864bbb84e0941359ea9e4c0db04ac","fullName":"brands/brands.post.spec.ts › POST /brands › a brand is rejected when the name is longer than 120 characters","name":"a brand is rejected when the name is longer than 120 characters","status":"passed","testResultsByEnv":{"default":"0129b2d373ec793dbacda9d72df344e8"}}

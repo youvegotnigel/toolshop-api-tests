@@ -1,0 +1,1 @@
+{"id":"5fc4ebee6cb07fe06ca64246f0f66c9e.259864bbb84e0941359ea9e4c0db04ac","fullName":"checkout/invoices.patch.spec.ts › PATCH /invoices/{id} › a customer cannot change another customer’s order","name":"a customer cannot change another customer’s order","status":"passed","testResultsByEnv":{"default":"72f0e79722c2a78f069267912f437af4"}}

@@ -1,0 +1,1 @@
+{"id":"eb07c5d42c9c7eaa78b7e9eb8fbe88db.259864bbb84e0941359ea9e4c0db04ac","fullName":"checkout/invoices.post.spec.ts › POST /invoices › a checkout without a billing city is rejected","name":"a checkout without a billing city is rejected","status":"passed","testResultsByEnv":{"default":"858930b396f3f8b3bbb8493040fc4771"}}

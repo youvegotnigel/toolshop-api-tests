@@ -1,0 +1,1 @@
+{"id":"29fbbd9c42a830fa060aa155ef651474.259864bbb84e0941359ea9e4c0db04ac","fullName":"products/product-specs.put.spec.ts › PUT /products/{productId}/specs/{specId} › changing a spec value keeps its name and unit","name":"changing a spec value keeps its name and unit","status":"passed","testResultsByEnv":{"default":"a05bbc8942ef6719e2c38b703eb46897"}}

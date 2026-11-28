@@ -1,0 +1,1 @@
+{"id":"040a00c4ec1a695d65a519f3e7cc3cd0.259864bbb84e0941359ea9e4c0db04ac","fullName":"checkout/invoices.post.spec.ts › POST /invoices › a customer checks out their cart and gets an invoice with the right total","name":"a customer checks out their cart and gets an invoice with the right total","status":"passed","testResultsByEnv":{"default":"bf8573230218b81255e5acc9f0187d90"}}

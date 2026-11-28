@@ -1,0 +1,1 @@
+{"id":"a93d7e614df0425bf0063fdf04b4b9eb.259864bbb84e0941359ea9e4c0db04ac","fullName":"checkout/invoices.status.spec.ts › PUT /invoices/{invoiceId}/status › an admin ships an order and the customer sees it","name":"an admin ships an order and the customer sees it","status":"passed","testResultsByEnv":{"default":"98cd9b3ff530a163387ca4dfd8733709"}}

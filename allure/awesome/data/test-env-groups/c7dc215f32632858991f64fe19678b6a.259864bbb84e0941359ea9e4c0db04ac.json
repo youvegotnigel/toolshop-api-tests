@@ -1,0 +1,1 @@
+{"id":"c7dc215f32632858991f64fe19678b6a.259864bbb84e0941359ea9e4c0db04ac","fullName":"categories/categories.search.spec.ts › GET /categories/search › a search that matches nothing returns an empty list","name":"a search that matches nothing returns an empty list","status":"passed","testResultsByEnv":{"default":"1a0ea199a504c0fbc7cdf33b6cb75ca5"}}

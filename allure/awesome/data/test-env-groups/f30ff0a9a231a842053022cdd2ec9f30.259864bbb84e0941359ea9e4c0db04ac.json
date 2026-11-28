@@ -1,0 +1,1 @@
+{"id":"f30ff0a9a231a842053022cdd2ec9f30.259864bbb84e0941359ea9e4c0db04ac","fullName":"brands/brands.search.spec.ts › GET /brands/search › a search that matches nothing returns an empty list","name":"a search that matches nothing returns an empty list","status":"passed","testResultsByEnv":{"default":"8f230d8c58f2ba8ca5fd2bc121578839"}}

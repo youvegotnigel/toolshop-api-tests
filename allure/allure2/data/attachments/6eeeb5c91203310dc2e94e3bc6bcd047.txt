@@ -1,0 +1,3 @@
+2026-11-28T08:55:09.319Z INFO  [w:1] Registered test customer 01m8gnv3p7f5vwaxm3yet80rjm
+2026-11-28T08:55:09.838Z INFO  [w:1] Logged in as customer (token valid 300s)
+2026-11-28T08:55:10.325Z INFO  [w:1] Logged in as admin (token valid 300s)

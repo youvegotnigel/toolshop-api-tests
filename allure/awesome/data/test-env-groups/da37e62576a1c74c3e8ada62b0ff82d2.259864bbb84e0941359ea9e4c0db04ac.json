@@ -1,0 +1,1 @@
+{"id":"da37e62576a1c74c3e8ada62b0ff82d2.259864bbb84e0941359ea9e4c0db04ac","fullName":"carts/carts.add-item.spec.ts › POST /carts/{id} › adding is rejected when the product does not exist","name":"adding is rejected when the product does not exist","status":"passed","testResultsByEnv":{"default":"05b81615640e06c303eff63aee541c2d"}}

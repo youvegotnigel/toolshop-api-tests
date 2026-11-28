@@ -1,0 +1,1 @@
+{"id":"3b62b01ecd1a15f00aedcfe8003f51d9.259864bbb84e0941359ea9e4c0db04ac","fullName":"brands/brands.post.spec.ts › POST /brands › a brand is rejected when the slug contains spaces","name":"a brand is rejected when the slug contains spaces","status":"passed","testResultsByEnv":{"default":"83d4652990bce5efa19dab495a2e3fc5"}}

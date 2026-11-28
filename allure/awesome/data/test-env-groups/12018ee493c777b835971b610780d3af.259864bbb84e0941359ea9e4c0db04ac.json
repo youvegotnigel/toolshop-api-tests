@@ -1,0 +1,1 @@
+{"id":"12018ee493c777b835971b610780d3af.259864bbb84e0941359ea9e4c0db04ac","fullName":"brands/brands.delete.spec.ts › DELETE /brands/{id} › only an admin can delete a brand, and it is then gone","name":"only an admin can delete a brand, and it is then gone","status":"passed","testResultsByEnv":{"default":"6c2d1176188921e56987859636400675"}}

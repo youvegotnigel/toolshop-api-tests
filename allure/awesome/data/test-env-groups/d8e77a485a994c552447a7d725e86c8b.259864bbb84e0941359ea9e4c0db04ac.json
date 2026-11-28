@@ -1,0 +1,1 @@
+{"id":"d8e77a485a994c552447a7d725e86c8b.259864bbb84e0941359ea9e4c0db04ac","fullName":"products/products.post.spec.ts › POST /products › a product is rejected when the price is not a number","name":"a product is rejected when the price is not a number","status":"passed","testResultsByEnv":{"default":"8182747a739e0a31b96d0ecc5409fe69"}}

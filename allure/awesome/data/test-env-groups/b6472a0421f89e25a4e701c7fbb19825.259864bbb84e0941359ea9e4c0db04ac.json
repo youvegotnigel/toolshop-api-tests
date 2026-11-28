@@ -1,0 +1,1 @@
+{"id":"b6472a0421f89e25a4e701c7fbb19825.259864bbb84e0941359ea9e4c0db04ac","fullName":"carts/carts.quantity.spec.ts › PUT /carts/{cartId}/product/quantity › a quantity over 99 is rejected","name":"a quantity over 99 is rejected","status":"passed","testResultsByEnv":{"default":"88dfe3da8f2174c17c871c5e7e466c68"}}

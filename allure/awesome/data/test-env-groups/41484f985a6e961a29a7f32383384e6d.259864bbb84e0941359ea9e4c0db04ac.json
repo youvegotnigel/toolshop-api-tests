@@ -1,0 +1,1 @@
+{"id":"41484f985a6e961a29a7f32383384e6d.259864bbb84e0941359ea9e4c0db04ac","fullName":"users/users.register.spec.ts › POST /users/register › registration is rejected when the password is too weak","name":"registration is rejected when the password is too weak","status":"passed","testResultsByEnv":{"default":"3a3d02b38f98fb700f283cc7efde4653"}}

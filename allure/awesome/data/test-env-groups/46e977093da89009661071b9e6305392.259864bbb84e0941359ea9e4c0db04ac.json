@@ -1,0 +1,1 @@
+{"id":"46e977093da89009661071b9e6305392.259864bbb84e0941359ea9e4c0db04ac","fullName":"carts/carts.add-item.spec.ts › POST /carts/{id} › adding is rejected when the quantity is over 99","name":"adding is rejected when the quantity is over 99","status":"passed","testResultsByEnv":{"default":"68ddeafba8f95f0c1d78e14560acb2e1"}}

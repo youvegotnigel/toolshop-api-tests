@@ -1,0 +1,1 @@
+{"id":"84ac56cb7c33a7ac7a9fb60ec6d19f88.259864bbb84e0941359ea9e4c0db04ac","fullName":"carts/carts.delete.spec.ts › DELETE /carts/{cartId} › a deleted cart, items included, can no longer be opened","name":"a deleted cart, items included, can no longer be opened","status":"passed","testResultsByEnv":{"default":"c6ed6b3cc95f864cd1573be9dab6e8a0"}}

@@ -1,0 +1,6 @@
+2026-11-28T08:58:14.810Z INFO  [w:3] Logged in as admin (token valid 300s)
+2026-11-28T08:58:27.351Z INFO  [w:3] Sweep products: removed 0, kept 14 (pinned by invoices until the hourly reset)
+2026-11-28T08:58:27.352Z INFO  [w:3] Sweep subcategories: removed 0, kept 0 (pinned by invoices until the hourly reset)
+2026-11-28T08:58:28.632Z INFO  [w:3] Sweep categories: removed 0, kept 14 (pinned by invoices until the hourly reset)
+2026-11-28T08:58:30.278Z INFO  [w:3] Sweep brands: removed 0, kept 14 (pinned by invoices until the hourly reset)
+2026-11-28T08:58:31.933Z INFO  [w:3] Sweep customers: removed 0, kept 13 (pinned by invoices until the hourly reset)

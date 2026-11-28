@@ -1,0 +1,4 @@
+2026-11-28T08:56:12.225Z INFO  [w:2] cleanup kept: delete product 01m8gnwy6xqcxcmhpgv7scycrc (referenced by invoice INV-2026000054; invoices cannot be deleted, the hourly reset removes them)
+2026-11-28T08:56:12.628Z INFO  [w:2] cleanup kept: delete category 01m8gnwxv5ajrz9rpqgsmzjc31 (referenced by invoice INV-2026000054; invoices cannot be deleted, the hourly reset removes them)
+2026-11-28T08:56:13.035Z INFO  [w:2] cleanup kept: delete brand 01m8gnwxemtf04e69r12a7y3p8 (referenced by invoice INV-2026000054; invoices cannot be deleted, the hourly reset removes them)
+2026-11-28T08:56:13.410Z INFO  [w:2] cleanup kept: delete customer 01m8gnwwgsxr5a9a98eqgxyj83 (referenced by invoice INV-2026000054; invoices cannot be deleted, the hourly reset removes them)

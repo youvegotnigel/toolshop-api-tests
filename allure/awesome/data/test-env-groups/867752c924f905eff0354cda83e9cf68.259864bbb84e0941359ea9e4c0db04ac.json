@@ -1,0 +1,1 @@
+{"id":"867752c924f905eff0354cda83e9cf68.259864bbb84e0941359ea9e4c0db04ac","fullName":"categories/categories.get.spec.ts › GET /categories/tree/{id} › opening a category that does not exist returns not found","name":"opening a category that does not exist returns not found","status":"passed","testResultsByEnv":{"default":"4aa0e4ac17d29c6a56acad84a4c9440d"}}

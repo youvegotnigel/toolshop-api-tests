@@ -1,0 +1,1 @@
+{"id":"139cc5b183778bb7cdfa3a44789e23bf.259864bbb84e0941359ea9e4c0db04ac","fullName":"products/products.delete.spec.ts › DELETE /products/{id} › a customer cannot delete a product","name":"a customer cannot delete a product","status":"passed","testResultsByEnv":{"default":"c481c9cf992a4dee4f5545e884c6cb38"}}

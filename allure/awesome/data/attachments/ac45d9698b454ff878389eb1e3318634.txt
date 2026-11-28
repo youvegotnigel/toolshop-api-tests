@@ -1,0 +1,3 @@
+2026-11-28T08:56:05.680Z INFO  [w:2] cleanup kept: delete product 01m8gnwrk16wmxks3fh4kk3kpf (referenced by guest invoice INV-2026000052; removed by the hourly reset)
+2026-11-28T08:56:06.077Z INFO  [w:2] cleanup kept: delete category 01m8gnwr59v8akcq94e7wn5mxm (referenced by guest invoice INV-2026000052; removed by the hourly reset)
+2026-11-28T08:56:06.472Z INFO  [w:2] cleanup kept: delete brand 01m8gnwqqgp3hra7fqamjrdb9b (referenced by guest invoice INV-2026000052; removed by the hourly reset)

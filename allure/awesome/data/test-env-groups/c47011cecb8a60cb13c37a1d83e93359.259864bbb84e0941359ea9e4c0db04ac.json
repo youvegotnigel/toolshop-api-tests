@@ -1,0 +1,1 @@
+{"id":"c47011cecb8a60cb13c37a1d83e93359.259864bbb84e0941359ea9e4c0db04ac","fullName":"checkout/invoices.guest.spec.ts › POST /invoices/guest › a guest checkout without an email is rejected","name":"a guest checkout without an email is rejected","status":"passed","testResultsByEnv":{"default":"a8409f72877c7da884d071610bc4928a"}}

@@ -1,0 +1,1 @@
+{"id":"fc3f5c108eaad75118b70afddf888238.259864bbb84e0941359ea9e4c0db04ac","fullName":"users/users.delete.spec.ts › DELETE /users/{id} › an admin deletes a customer, who can then no longer log in","name":"an admin deletes a customer, who can then no longer log in","status":"passed","testResultsByEnv":{"default":"4ba6b89fb6ebb531517bf7b4f304f1b1"}}

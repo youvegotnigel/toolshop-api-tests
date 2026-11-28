@@ -1,0 +1,1 @@
+{"id":"59ce73b50625d7f0258106f6cee61015.259864bbb84e0941359ea9e4c0db04ac","fullName":"checkout/payment.check.spec.ts › POST /payment/check › a card payment is rejected when the CVV has letters","name":"a card payment is rejected when the CVV has letters","status":"passed","testResultsByEnv":{"default":"4a73a3adc9ef59c7d44ce10c81ebf2a6"}}

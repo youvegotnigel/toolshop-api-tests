@@ -1,0 +1,1 @@
+{"id":"35e60f0aae3ffa8b80a62d0be12c3441.259864bbb84e0941359ea9e4c0db04ac","fullName":"users/users.login.spec.ts › POST /users/login › a wrong password is refused without a token","name":"a wrong password is refused without a token","status":"passed","testResultsByEnv":{"default":"e0004be03a72b327c3aef40dc060e108"}}

@@ -1,0 +1,1 @@
+{"id":"283a36913f4cd4c771b78aaf45e8d55b.259864bbb84e0941359ea9e4c0db04ac","fullName":"users/users.logout.spec.ts › GET /users/logout › after logging out, the old token no longer opens the account","name":"after logging out, the old token no longer opens the account","status":"passed","testResultsByEnv":{"default":"ec23800df248cd18575724993a09f849"}}

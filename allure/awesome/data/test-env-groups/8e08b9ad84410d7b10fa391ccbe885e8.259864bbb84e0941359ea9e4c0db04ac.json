@@ -1,0 +1,1 @@
+{"id":"8e08b9ad84410d7b10fa391ccbe885e8.259864bbb84e0941359ea9e4c0db04ac","fullName":"products/products.delete.spec.ts › DELETE /products/{id} › an admin deletes a product and its specs go with it","name":"an admin deletes a product and its specs go with it","status":"passed","testResultsByEnv":{"default":"82e75b5cf8b65220a6436b147c7b3456"}}

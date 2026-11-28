@@ -1,0 +1,1 @@
+{"id":"bdd72cc82c30ef541a1203f83521a024.259864bbb84e0941359ea9e4c0db04ac","fullName":"products/products.patch.spec.ts › PATCH /products/{id} › changing just the price keeps everything else","name":"changing just the price keeps everything else","status":"passed","testResultsByEnv":{"default":"f441052ce12e57bb390d130acd496e58"}}

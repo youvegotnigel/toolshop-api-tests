@@ -1,0 +1,1 @@
+{"id":"507f3d23de2caf68b818fe5f0fd98552.259864bbb84e0941359ea9e4c0db04ac","fullName":"users/users.patch.spec.ts › PATCH /users/{id} › a phone number with letters is rejected","name":"a phone number with letters is rejected","status":"passed","testResultsByEnv":{"default":"e1cd3716206709a6abebe03818d7d343"}}

@@ -1,0 +1,1 @@
+{"id":"0d2ddaa591753c613d1a71c56c69b27d.259864bbb84e0941359ea9e4c0db04ac","fullName":"categories/categories.delete.spec.ts › DELETE /categories/{id} › an admin deletes a category and it can no longer be opened","name":"an admin deletes a category and it can no longer be opened","status":"passed","testResultsByEnv":{"default":"2fcaf19c8573c4658d3eb4cb2aafd623"}}

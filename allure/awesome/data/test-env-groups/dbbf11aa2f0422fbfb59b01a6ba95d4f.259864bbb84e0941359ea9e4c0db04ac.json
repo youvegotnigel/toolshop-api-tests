@@ -1,0 +1,1 @@
+{"id":"dbbf11aa2f0422fbfb59b01a6ba95d4f.259864bbb84e0941359ea9e4c0db04ac","fullName":"checkout/invoices.get.spec.ts › GET /invoices/{id} › an admin can open any customer’s invoice","name":"an admin can open any customer’s invoice","status":"passed","testResultsByEnv":{"default":"02ed48456a559dcb0621c60182095294"}}

@@ -1,0 +1,1 @@
+{"id":"ad2a3038755e793811fa67db4e229d7e.259864bbb84e0941359ea9e4c0db04ac","fullName":"products/product-specs.post.spec.ts › POST /products/{productId}/specs › a shopper who is not logged in cannot add specs","name":"a shopper who is not logged in cannot add specs","status":"passed","testResultsByEnv":{"default":"12681f2b26656cda1913af71c4e59d80"}}

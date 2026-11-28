@@ -1,0 +1,1 @@
+{"id":"7424b764e1514a17bd3a8d7d0a3aa25f.259864bbb84e0941359ea9e4c0db04ac","fullName":"categories/categories.patch.spec.ts › PATCH /categories/{id} › taking a slug another category already uses is refused","name":"taking a slug another category already uses is refused","status":"passed","testResultsByEnv":{"default":"91f460124be7e6ee9c5ee40b31920e4e"}}

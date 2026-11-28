@@ -1,0 +1,1 @@
+{"id":"7b2db0d6e0687503161bd4596830eda4.259864bbb84e0941359ea9e4c0db04ac","fullName":"products/product-specs.post.spec.ts › POST /products/{productId}/specs › a spec without a value is rejected","name":"a spec without a value is rejected","status":"passed","testResultsByEnv":{"default":"ea0db1fb1ade7b68c6d86a20650cf5fd"}}

@@ -1,0 +1,1 @@
+{"id":"becaba04765b3a4458533eeabaae98e7.259864bbb84e0941359ea9e4c0db04ac","fullName":"products/products.patch.spec.ts › PATCH /products/{id} › a price that is not a number is rejected","name":"a price that is not a number is rejected","status":"passed","testResultsByEnv":{"default":"80ec36c5535128363da97218898354a3"}}
